@@ -1,277 +1,228 @@
-# 🛒 SmartShop AI - Inteligentne Zakupy w Polsce
+# 🛒 SmartShop AI - Intelligent Price Comparison Platform
 
-**PEŁNA, DZIAŁAJĄCA APLIKACJA** - Platforma porównywania cen produktów spożywczych z wykorzystaniem sztucznej inteligencji dla polskiego rynku (LIDL, Biedronka, Auchan).
+[![Node.js](https://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+[![Express](https://img.shields.io/badge/Express-4.18-lightgrey.svg)](https://expressjs.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-5.0-2D3748.svg)](https://www.prisma.io/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 **WERSJA KOMPLETNA - WSZYSTKO DZIAŁA!**
+## 🚀 Overview
 
-### ✅ **Gotowe Funkcjonalności:**
-- **Frontend:** Pełna aplikacja SPA z wszystkimi funkcjami
-- **Backend:** API serwer z wszystkimi endpoint'ami
-- **Scraping:** Automatyczna aktualizacja cen (mock data)
-- **AI:** Inteligentne rekomendacje zakupowe
-- **Shopping List:** Zarządzanie listą zakupów z optymalizacją trasy
-- **Analytics:** Wykresy i raporty oszczędności
+SmartShop AI is an intelligent price comparison platform designed for the Polish market. It automatically scrapes prices from major retailers (LIDL, Biedronka, Auchan), provides AI-powered shopping recommendations, and optimizes shopping routes to maximize savings.
 
-## 🎯 **Live Demo**
-- **GitHub Pages**: https://nesquaeke.github.io/SmartShop-AI/
-- **Frontend**: `smartshop-full.html` - Pełna aplikacja
-- **Backend**: Serwer API na porcie 3001
+## 🏗️ Project Structure
 
-## 🛠️ **Jak Uruchomić**
-
-### **Frontend (Błyskawiczne uruchomienie):**
-```bash
-# Otwórz plik w przeglądarce
-open smartshop-full.html
-# lub
-npx serve .
 ```
-
-### **Backend (z API):**
-```bash
-cd backend
-npm install
-npm run dev
-# Serwer: http://localhost:3001
-```
-
-## 📊 **Architektura Systemu**
-
-### **Frontend (smartshop-full.html)**
-- **Framework**: Vanilla JS + Tailwind CSS
-- **Features**: SPA, Real-time API calls, Responsive UI
-- **Sekcje**: Dashboard, Produkty, Lista zakupów, Analityka
-- **API Integration**: Automatyczne przełączanie między API a demo data
-
-### **Backend (Node.js + TypeScript)**
-```
-backend/
+SmartshopAi/
 ├── src/
-│   ├── server.ts          # Main server
-│   ├── routes/
-│   │   ├── products.ts    # Products API
-│   │   ├── prices.ts      # Price comparison
-│   │   ├── shopping-list.ts # Shopping lists
-│   │   ├── ai.ts         # AI recommendations
-│   │   └── scraper.ts    # Price scraping
-│   └── ...
-├── dist/                  # Compiled JS
-└── package.json
+│   ├── frontend/           # Frontend Application
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Application pages
+│   │   ├── styles/         # CSS and styling files
+│   │   ├── assets/         # Static assets
+│   │   ├── utils/          # Frontend utilities
+│   │   ├── index.html      # Main application
+│   │   └── package.json    # Frontend dependencies
+│   │
+│   ├── backend/            # Backend API Server
+│   │   ├── src/
+│   │   │   ├── routes/     # API route handlers
+│   │   │   ├── models/     # Database models
+│   │   │   ├── services/   # Business logic
+│   │   │   ├── utils/      # Backend utilities
+│   │   │   ├── config/     # Configuration files
+│   │   │   └── server.ts   # Main server file
+│   │   ├── prisma/         # Database schema
+│   │   ├── dist/           # Compiled JavaScript
+│   │   └── package.json    # Backend dependencies
+│   │
+│   ├── shared/             # Shared types and utilities
+│   │   ├── types/          # TypeScript type definitions
+│   │   ├── constants/      # Shared constants
+│   │   └── utils/          # Shared utility functions
+│   │
+│   ├── docs/               # Documentation
+│   │   ├── ARCHITECTURE.md # System architecture
+│   │   └── DEPLOY.md       # Deployment guide
+│   │
+│   └── scripts/            # Utility scripts
+│       ├── lidl-real-products.js
+│       ├── test-lidl.js
+│       └── test-lidl-simple.js
+│
+├── .git/                   # Git repository
+├── .gitignore             # Git ignore file
+├── package.json           # Root package.json (monorepo)
+├── docker-compose.yml     # Docker configuration
+└── README.md             # This file
 ```
 
-## 🔥 **Kluczowe Funkcje**
+## ✨ Features
 
-### **1. 🛍️ Porównywanie Cen**
-- Real-time porównanie cen w 3 sklepach
-- Automatyczne oznaczenie najniższej ceny
-- Historia zmian cen z wykresami
-- Kalkulacja oszczędności
+### 🎯 Core Features
+- **Real-time Price Scraping**: Automated price collection from major Polish retailers
+- **Intelligent Recommendations**: AI-powered shopping suggestions
+- **Route Optimization**: Smart shopping route planning
+- **Multi-language Support**: Polish and English interface
+- **Price Alerts**: Notifications when products reach target prices
+- **Shopping Lists**: Organized shopping list management
 
-### **2. 🤖 AI Rekomendacje**
-- Inteligentne sugestie produktów
-- Predykcja zmian cen
-- Optymalizacja listy zakupów
-- Personalizowane promocje
+### 🛍️ Supported Stores
+- **LIDL** - Real-time scraping implemented
+- **Biedronka** - Coming soon
+- **Auchan** - Coming soon
 
-### **3. 📝 Lista Zakupów**
-- Dodawanie produktów jednym kliknięciem
-- Automatyczny wybór najlepszej ceny
-- Optymalizacja trasy zakupów
-- Kalkulacja całkowitych oszczędności
+### 🌐 Frontend Features
+- Modern responsive design with Tailwind CSS
+- Real-time data updates
+- Interactive charts and analytics
+- Floating animations and glassmorphism UI
+- Progressive Web App (PWA) ready
 
-### **4. 📈 Analityka**
-- Wykresy historii cen (Chart.js)
-- Raporty oszczędności
-- Statystyki zakupów
-- Alarmy cenowe
+### ⚡ Backend Features
+- RESTful API with Express.js
+- TypeScript for type safety
+- Prisma ORM for database management
+- Web scraping with Puppeteer/Playwright
+- Rate limiting and security middlewares
 
-### **5. 🔄 Automatyzacja**
-- Scraping cen (symulowany)
-- Aktualizacja danych w czasie rzeczywistym
-- Powiadomienia o promocjach
-- Auto-refresh funkcjonalności
+## 🚀 Quick Start
 
-## 🗂️ **API Endpoints**
+### Prerequisites
+- Node.js 16+ and npm 7+
+- Git
 
-### **Products**
-```
-GET    /api/products              # Lista produktów
-GET    /api/products/:id          # Szczegóły produktu
-GET    /api/products/meta/categories # Kategorie
-```
+### Installation
 
-### **Prices**
-```
-GET    /api/prices/compare/:id    # Porównanie cen
-GET    /api/prices/history/:id    # Historia cen
-GET    /api/prices/alerts         # Alarmy cenowe
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/SmartshopAi.git
+   cd SmartshopAi
+   ```
 
-### **Shopping Lists**
-```
-GET    /api/shopping-list         # Listy zakupów
-POST   /api/shopping-list         # Nowa lista
-PUT    /api/shopping-list/:id/items # Dodaj produkt
-POST   /api/shopping-list/:id/optimize # Optymalizuj trasę
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   npm run install:all
+   ```
 
-### **AI & Automation**
-```
-POST   /api/ai/recommendations    # AI rekomendacje
-POST   /api/scraper/run          # Uruchom scraping
-GET    /api/scraper/status       # Status scraping'u
-```
+3. **Set up the database**
+   ```bash
+   npm run prisma:generate
+   npm run prisma:migrate
+   ```
 
-## 🎨 **UI/UX Features**
+4. **Start the development servers**
+   ```bash
+   npm run dev
+   ```
 
-- **Glassmorphism Design**: Nowoczesny, przezroczysty design
-- **Floating Animations**: Płynne animacje i przejścia
-- **Responsive Layout**: Działa na wszystkich urządzeniach
-- **Real-time Notifications**: Powiadomienia o akcjach
-- **Interactive Charts**: Wykresy z Chart.js
-- **Premium Cards**: Hover effects i 3D transforms
+This will start:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3001
 
-## 🏪 **Obsługiwane Sklepy**
+## 🔧 Available Scripts
 
-| Sklep | Status | Produkty | Features |
-|-------|--------|----------|----------|
-| **LIDL** | ✅ Active | 500+ | Price tracking, Promotions |
-| **Biedronka** | ✅ Active | 600+ | Weekly offers, Loyalty |
-| **Auchan** | ✅ Active | 400+ | Online/Offline, Bulk prices |
+### Root Level Commands
+- `npm run dev` - Start both frontend and backend in development mode
+- `npm run build` - Build both applications for production
+- `npm run start` - Start both applications in production mode
+- `npm run install:all` - Install dependencies for all packages
+- `npm run clean` - Clean all node_modules and build artifacts
 
-## 📱 **Produkty**
+### Frontend Commands
+- `npm run dev:frontend` - Start frontend development server
+- `npm run build:frontend` - Build frontend for production
 
-### **Kategorie:**
-- 🥛 Nabiał (Mleko, Masło, Jajka)
-- 🍞 Pieczywo (Chleb, Bułki)
-- 🍎 Owoce i Warzywa
-- 🥫 Produkty w puszce
-- 🍖 Mięso i Wędliny
+### Backend Commands
+- `npm run dev:backend` - Start backend development server
+- `npm run build:backend` - Build backend for production
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:studio` - Open Prisma Studio
 
-### **Przykładowe Dane:**
-- **Mleko UHT 1L**: LIDL 3.49 PLN ↓ | Biedronka 3.99 PLN | Auchan 4.19 PLN
-- **Chleb żytni 500g**: Biedronka 2.89 PLN ↓ | LIDL 3.19 PLN | Auchan 3.49 PLN
-- **Masło 200g**: Auchan 4.99 PLN ↓ | LIDL 5.49 PLN | Biedronka 5.99 PLN
+### Testing & Quality
+- `npm run lint` - Run ESLint on backend code
+- `npm run test` - Run test suite
 
-## 🔧 **Technologie**
+## 🐳 Docker Support
 
-### **Frontend:**
-- HTML5, CSS3, JavaScript ES6+
-- Tailwind CSS 3.0
-- Lucide Icons
-- Chart.js
-- Fetch API
+Build and run with Docker:
 
-### **Backend:**
-- Node.js 18+
-- TypeScript 5.0
-- Express.js
-- CORS enabled
-- REST API
-
-### **Tools:**
-- ts-node-dev (development)
-- TypeScript compiler
-- npm scripts
-- Git workflow
-
-## 📦 **Instalacja i Deployment**
-
-### **Lokalne uruchomienie:**
 ```bash
-# 1. Sklonuj repo
-git clone https://github.com/nesquaeke/SmartShop-AI.git
-cd SmartShop-AI
-
-# 2. Uruchom frontend
-open smartshop-full.html
-
-# 3. Uruchom backend (opcjonalne)
-cd backend
-npm install
-npm run dev
+npm run docker:build
+npm run docker:run
 ```
 
-### **GitHub Pages Deployment:**
-```bash
-# Już skonfigurowane! 
-# https://nesquaeke.github.io/SmartShop-AI/
-```
+## 📊 API Endpoints
 
-### **Heroku/Railway Deployment:**
-```bash
-# Backend ready for deployment
-cd backend
-npm run build
-npm start
-```
+### Products
+- `GET /api/products` - Get all products
+- `GET /api/products/:id` - Get specific product
+- `GET /api/products/search?q={query}` - Search products
 
-## 🔄 **Update Workflow**
+### Shopping Lists
+- `GET /api/shopping-list` - Get shopping lists
+- `POST /api/shopping-list` - Create new shopping list
+- `POST /api/shopping-list/:id/optimize` - Optimize shopping route
 
-Użyj naszego automatycznego skryptu:
-```bash
-./update.sh "Your commit message"
-```
+### AI Recommendations
+- `POST /api/ai/recommendations` - Get AI recommendations
+- `GET /api/ai/predictions` - Get price predictions
 
-## 🎯 **Roadmap**
+### Price Scraping
+- `POST /api/scraper/run` - Trigger price scraping
+- `GET /api/scraper/status` - Get scraping status
 
-### **Phase 1** ✅ **COMPLETED**
-- [x] Pełny frontend z wszystkimi funkcjami
-- [x] Backend API z wszystkimi endpoint'ami  
-- [x] Mock data system
-- [x] GitHub integration
+### Price Alerts
+- `GET /api/prices/alerts` - Get price alerts
+- `POST /api/prices/alerts` - Create price alert
 
-### **Phase 2** 🚧 **IN PROGRESS**
-- [ ] Real scraping implementation
-- [ ] Database integration (PostgreSQL)
-- [ ] User authentication
-- [ ] Mobile app (React Native)
+## 🌍 Multi-language Support
 
-### **Phase 3** 📋 **PLANNED**
-- [ ] Machine Learning price prediction
-- [ ] Social features (sharing lists)
-- [ ] Advanced analytics
-- [ ] Multi-language support
+The application supports:
+- **Polish** (Default) - Full UI translation
+- **English** - Complete interface localization
 
-## 💰 **Business Model**
+Language preference is automatically saved and restored.
 
-1. **Freemium Model**: Podstawowe funkcje za darmo
-2. **Premium Features**: AI insights, advanced analytics
-3. **Affiliate Marketing**: Linki do sklepów
-4. **Enterprise Solutions**: API dla biznesu
+## 🔒 Security Features
 
-## 📊 **Metrics & KPIs**
+- CORS protection
+- Helmet security headers
+- Rate limiting
+- Input validation with Joi
+- Authentication ready (JWT)
 
-- **User Savings**: Average 15% na zakupach
-- **Time Saved**: 30 minut na tygodniowe zakupy  
-- **Price Accuracy**: 98%+ realtime data
-- **User Satisfaction**: 4.8/5 stars
+## 📈 Performance
 
-## 🏆 **Osiągnięcia**
+- **Frontend**: Optimized with modern bundling
+- **Backend**: Efficient API responses with caching
+- **Database**: Optimized queries with Prisma
+- **Scraping**: Concurrent processing with queue management
 
-- ✅ **Kompletna aplikacja działająca**
-- ✅ **Pełna integracja frontend-backend**
-- ✅ **Responsywny design dla wszystkich urządzeń**
-- ✅ **Real-time API communication**
-- ✅ **GitHub Pages deployment**
-- ✅ **Professional UI/UX**
+## 🤝 Contributing
 
-## 📞 **Kontakt & Support**
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- **GitHub**: [@nesquaeke](https://github.com/nesquaeke)
-- **Live Demo**: [SmartShop AI](https://nesquaeke.github.io/SmartShop-AI/)
-- **Issues**: [GitHub Issues](https://github.com/nesquaeke/SmartShop-AI/issues)
+## 📝 License
 
-## 📄 **Licencja**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-MIT License - Zobacz [LICENSE](LICENSE) file.
+## 🙏 Acknowledgments
+
+- Price data from LIDL, Biedronka, and Auchan
+- Built with modern web technologies
+- Inspired by smart shopping solutions
+
+## 📞 Support
+
+For support, email support@smartshop-ai.com or create an issue in the GitHub repository.
 
 ---
 
-## 🎉 **GOTOWE! WSZYSTKO DZIAŁA!**
-
-**SmartShop AI** jest w pełni funkcjonalną aplikacją ready for production! 
-
-🚀 **Otwórz:** https://nesquaeke.github.io/SmartShop-AI/smartshop-full.html
-
-💻 **Kod:** https://github.com/nesquaeke/SmartShop-AI 
+**SmartShop AI** - Making smart shopping accessible to everyone! 🛒✨ 

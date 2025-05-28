@@ -49,6 +49,41 @@
         .notification.show { 
             transform: translateX(0); 
         }
+        .language-selector {
+            position: relative;
+        }
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            min-width: 120px;
+            display: none;
+        }
+        .language-dropdown.show {
+            display: block;
+        }
+        .language-option {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .language-option:hover {
+            background-color: #f3f4f6;
+        }
+        .language-option:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+        .language-option:last-child {
+            border-radius: 0 0 12px 12px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 min-h-screen">
@@ -67,23 +102,42 @@
                         <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             SmartShop AI
                         </h1>
-                        <p class="text-xs text-gray-500">Full Application</p>
+                        <p class="text-xs text-gray-500" data-text="subtitle">Full Application</p>
                     </div>
                 </div>
                 
                 <nav class="hidden lg:flex space-x-1">
-                    <button onclick="showSection('home')" class="px-4 py-2 rounded-xl bg-blue-500 text-white font-medium">Dashboard</button>
-                    <button onclick="showSection('products')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50">Produkty</button>
-                    <button onclick="showSection('shopping-list')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50">Lista Zakupów</button>
-                    <button onclick="showSection('analytics')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50">Analityka</button>
+                    <button onclick="showSection('home')" class="px-4 py-2 rounded-xl bg-blue-500 text-white font-medium" data-text="nav.dashboard">Dashboard</button>
+                    <button onclick="showSection('products')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50" data-text="nav.products">Produkty</button>
+                    <button onclick="showSection('shopping-list')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50" data-text="nav.shopping_list">Lista Zakupów</button>
+                    <button onclick="showSection('analytics')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50" data-text="nav.analytics">Analityka</button>
                 </nav>
                 
                 <div class="flex items-center space-x-3">
+                    <!-- Language Selector -->
+                    <div class="language-selector">
+                        <button id="languageBtn" onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 p-2 rounded-xl text-gray-600 hover:bg-white/50 transition-all">
+                            <span id="currentFlag">🇵🇱</span>
+                            <span id="currentLang" class="text-sm font-medium">PL</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                        <div id="languageDropdown" class="language-dropdown">
+                            <div class="language-option" onclick="changeLanguage('pl')">
+                                <span>🇵🇱</span>
+                                <span>Polski</span>
+                            </div>
+                            <div class="language-option" onclick="changeLanguage('en')">
+                                <span>🇬🇧</span>
+                                <span>English</span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button id="refreshDataBtn" onclick="refreshAllData()" class="p-2 rounded-xl text-gray-600 hover:bg-white/50 transition-all">
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                     </button>
                     <div class="text-sm text-gray-500">
-                        Status: <span id="apiStatus" class="font-medium text-green-600">Online</span>
+                        <span data-text="status">Status</span>: <span id="apiStatus" class="font-medium text-green-600" data-text="status.online">Online</span>
                     </div>
                 </div>
             </div>
@@ -102,7 +156,7 @@
                             <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
                             <input 
                                 type="text" 
-                                placeholder="Wyszukaj produkty (np. mleko, chleb)"
+                                data-placeholder="search.placeholder"
                                 class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none"
                                 id="globalSearch"
                             >
@@ -126,8 +180,8 @@
                         </div>
                         <span id="productsCount" class="text-2xl font-bold text-blue-600">0</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900">Produkty</h3>
-                    <p class="text-sm text-gray-500">W bazie danych</p>
+                    <h3 class="font-semibold text-gray-900" data-text="stats.products">Produkty</h3>
+                    <p class="text-sm text-gray-500" data-text="stats.products_desc">W bazie danych</p>
                 </div>
                 
                 <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
@@ -137,8 +191,8 @@
                         </div>
                         <span id="savingsAmount" class="text-2xl font-bold text-green-600">0 PLN</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900">Oszczędności</h3>
-                    <p class="text-sm text-gray-500">Miesięczne</p>
+                    <h3 class="font-semibold text-gray-900" data-text="stats.savings">Oszczędności</h3>
+                    <p class="text-sm text-gray-500" data-text="stats.savings_desc">Miesięczne</p>
                 </div>
                 
                 <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
@@ -148,8 +202,8 @@
                         </div>
                         <span class="text-2xl font-bold text-purple-600">3</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900">Sklepy</h3>
-                    <p class="text-sm text-gray-500">Aktywne</p>
+                    <h3 class="font-semibold text-gray-900" data-text="stats.stores">Sklepy</h3>
+                    <p class="text-sm text-gray-500" data-text="stats.stores_desc">Aktywne</p>
                 </div>
                 
                 <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
@@ -159,8 +213,8 @@
                         </div>
                         <span id="alertsCount" class="text-2xl font-bold text-red-600">0</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900">Alarmy</h3>
-                    <p class="text-sm text-gray-500">Aktywne</p>
+                    <h3 class="font-semibold text-gray-900" data-text="stats.alerts">Alarmy</h3>
+                    <p class="text-sm text-gray-500" data-text="stats.alerts_desc">Aktywne</p>
                 </div>
             </div>
 
@@ -168,7 +222,7 @@
             <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 mb-8">
                 <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
                     <i data-lucide="brain" class="w-6 h-6 mr-2 text-purple-600"></i>
-                    AI Rekomendacje
+                    <span data-text="ai.recommendations">AI Rekomendacje</span>
                 </h3>
                 <div id="aiRecommendations" class="space-y-4">
                     <!-- AI recommendations will be loaded here -->
@@ -177,7 +231,7 @@
 
             <!-- Recent Products -->
             <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Najnowsze Produkty</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="recent.products">Najnowsze Produkty</h3>
                 <div id="recentProducts" class="grid gap-4">
                     <!-- Recent products will be loaded here -->
                 </div>
@@ -187,15 +241,15 @@
         <!-- Products Section -->
         <div id="products-section" class="section hidden">
             <div class="mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Katalog Produktów</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4" data-text="products.catalog">Katalog Produktów</h2>
                 <div class="flex gap-4 mb-4">
                     <select id="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
-                        <option value="all">Wszystkie kategorie</option>
+                        <option value="all" data-text="products.all_categories">Wszystkie kategorie</option>
                     </select>
                     <select id="sortFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
-                        <option value="name">Sortuj po nazwie</option>
-                        <option value="price">Sortuj po cenie</option>
-                        <option value="savings">Sortuj po oszczędnościach</option>
+                        <option value="name" data-text="products.sort_name">Sortuj po nazwie</option>
+                        <option value="price" data-text="products.sort_price">Sortuj po cenie</option>
+                        <option value="savings" data-text="products.sort_savings">Sortuj po oszczędnościach</option>
                     </select>
                 </div>
             </div>
@@ -208,17 +262,17 @@
         <div id="shopping-list-section" class="section hidden">
             <div class="grid lg:grid-cols-2 gap-8">
                 <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Twoja Lista Zakupów</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="shopping.title">Twoja Lista Zakupów</h3>
                     <div id="shoppingListContainer">
                         <!-- Shopping list will be loaded here -->
                     </div>
-                    <button onclick="optimizeRoute()" class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
+                    <button onclick="optimizeRoute()" class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700" data-text="shopping.optimize_route">
                         🚀 Optymalizuj Trasę
                     </button>
                 </div>
                 
                 <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Optymalna Trasa</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="shopping.optimized_route">Optymalna Trasa</h3>
                     <div id="optimizedRoute">
                         <!-- Optimized route will be shown here -->
                     </div>
@@ -228,22 +282,22 @@
 
         <!-- Analytics Section -->
         <div id="analytics-section" class="section hidden">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Analityka i Raporty</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6" data-text="analytics.title">Analityka i Raporty</h2>
             
             <div class="grid lg:grid-cols-2 gap-8 mb-8">
                 <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Historia Cen</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="analytics.price_trends">Historia Cen</h3>
                     <canvas id="priceChart" width="400" height="200"></canvas>
                 </div>
                 
                 <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Oszczędności</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="analytics.savings_breakdown">Oszczędności</h3>
                     <canvas id="savingsChart" width="400" height="200"></canvas>
                 </div>
             </div>
             
             <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Aktywne Alarmy Cenowe</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="analytics.price_alerts">Aktywne Alarmy Cenowe</h3>
                 <div id="priceAlerts">
                     <!-- Price alerts will be loaded here -->
                 </div>
@@ -264,6 +318,7 @@
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
+            initializeLanguage(); // Initialize language system first
             initializeApp();
         });
 
@@ -861,6 +916,293 @@
                 searchProducts();
             }
         });
+
+        // ============= MULTILINGUAL SYSTEM =============
+        
+        // Translation data
+        const translations = {
+            pl: {
+                subtitle: "Pełna Aplikacja",
+                nav: {
+                    dashboard: "Dashboard",
+                    products: "Produkty",
+                    shopping_list: "Lista Zakupów",
+                    analytics: "Analityka"
+                },
+                status: "Status",
+                "status.online": "Online",
+                "status.offline": "Offline",
+                search: {
+                    placeholder: "Wyszukaj produkty (np. mleko, chleb)"
+                },
+                stats: {
+                    products: "Produkty",
+                    products_desc: "W bazie danych",
+                    savings: "Oszczędności",
+                    savings_desc: "Miesięczne",
+                    stores: "Sklepy",
+                    stores_desc: "Aktywne",
+                    alerts: "Alarmy",
+                    alerts_desc: "Aktywne"
+                },
+                ai: {
+                    recommendations: "AI Rekomendacje"
+                },
+                recent: {
+                    products: "Najnowsze Produkty"
+                },
+                products: {
+                    catalog: "Katalog Produktów",
+                    all_categories: "Wszystkie kategorie",
+                    sort_name: "Sortuj po nazwie",
+                    sort_price: "Sortuj po cenie",
+                    sort_savings: "Sortuj po oszczędnościach",
+                    add_to_list: "Dodaj do listy",
+                    best_price: "Najlepsza cena",
+                    cheapest_at: "Najtaniej w"
+                },
+                shopping: {
+                    title: "Lista Zakupów",
+                    create_new: "Utwórz nową listę",
+                    optimize_route: "Optymalizuj trasę",
+                    optimized_route: "Optymalna Trasa",
+                    your_lists: "Twoje listy",
+                    total: "Razem",
+                    items: "produktów"
+                },
+                analytics: {
+                    title: "Analityka i Raporty",
+                    price_trends: "Trendy Cenowe",
+                    savings_breakdown: "Podział Oszczędności",
+                    monthly_savings: "Miesięczne oszczędności",
+                    price_alerts: "Alerty Cenowe"
+                },
+                notifications: {
+                    added_to_list: "Dodano do listy zakupów!",
+                    scraping_started: "Rozpoczęto skanowanie cen...",
+                    data_refreshed: "Dane odświeżone!",
+                    error_refresh: "Błąd odświeżania",
+                    route_optimized: "Trasa zoptymalizowana!",
+                    error_optimization: "Błąd optymalizacji trasy"
+                }
+            },
+            en: {
+                subtitle: "Full Application",
+                nav: {
+                    dashboard: "Dashboard",
+                    products: "Products",
+                    shopping_list: "Shopping List",
+                    analytics: "Analytics"
+                },
+                status: "Status",
+                "status.online": "Online",
+                "status.offline": "Offline",
+                search: {
+                    placeholder: "Search products (e.g. milk, bread)"
+                },
+                stats: {
+                    products: "Products",
+                    products_desc: "In database",
+                    savings: "Savings",
+                    savings_desc: "Monthly",
+                    stores: "Stores",
+                    stores_desc: "Active",
+                    alerts: "Alerts",
+                    alerts_desc: "Active"
+                },
+                ai: {
+                    recommendations: "AI Recommendations"
+                },
+                recent: {
+                    products: "Recent Products"
+                },
+                products: {
+                    catalog: "Product Catalog",
+                    all_categories: "All categories",
+                    sort_name: "Sort by name",
+                    sort_price: "Sort by price",
+                    sort_savings: "Sort by savings",
+                    add_to_list: "Add to list",
+                    best_price: "Best price",
+                    cheapest_at: "Cheapest at"
+                },
+                shopping: {
+                    title: "Shopping List",
+                    create_new: "Create new list",
+                    optimize_route: "Optimize route",
+                    optimized_route: "Optimized Route",
+                    your_lists: "Your lists",
+                    total: "Total",
+                    items: "items"
+                },
+                analytics: {
+                    title: "Analytics & Reports",
+                    price_trends: "Price Trends",
+                    savings_breakdown: "Savings Breakdown",
+                    monthly_savings: "Monthly savings",
+                    price_alerts: "Price Alerts"
+                },
+                notifications: {
+                    added_to_list: "Added to shopping list!",
+                    scraping_started: "Price scanning started...",
+                    data_refreshed: "Data refreshed!",
+                    error_refresh: "Refresh error",
+                    route_optimized: "Route optimized!",
+                    error_optimization: "Route optimization error"
+                }
+            }
+        };
+
+        // Current language
+        let currentLanguage = localStorage.getItem('smartshop_language') || 'pl';
+
+        // Language functions
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!e.target.closest('.language-selector')) {
+                    dropdown.classList.remove('show');
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('smartshop_language', lang);
+            
+            // Update UI
+            updateLanguageDisplay();
+            updateAllTexts();
+            
+            // Close dropdown
+            document.getElementById('languageDropdown').classList.remove('show');
+            
+            showNotification(
+                lang === 'pl' ? '🇵🇱 Język zmieniony na Polski' : '🇬🇧 Language changed to English', 
+                'success'
+            );
+        }
+
+        function updateLanguageDisplay() {
+            const flagElement = document.getElementById('currentFlag');
+            const langElement = document.getElementById('currentLang');
+            
+            if (currentLanguage === 'pl') {
+                flagElement.textContent = '🇵🇱';
+                langElement.textContent = 'PL';
+            } else {
+                flagElement.textContent = '🇬🇧';
+                langElement.textContent = 'EN';
+            }
+        }
+
+        function updateAllTexts() {
+            const currentTranslations = translations[currentLanguage];
+            
+            // Update all elements with data-text attribute
+            document.querySelectorAll('[data-text]').forEach(element => {
+                const key = element.getAttribute('data-text');
+                const translation = getTranslation(key, currentTranslations);
+                
+                if (translation) {
+                    element.textContent = translation;
+                }
+            });
+            
+            // Update placeholders
+            document.querySelectorAll('[data-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-placeholder');
+                const translation = getTranslation(key, currentTranslations);
+                
+                if (translation) {
+                    element.placeholder = translation;
+                }
+            });
+            
+            // Update sections that need dynamic translation
+            updateDynamicSections();
+        }
+
+        function getTranslation(key, translations) {
+            const keys = key.split('.');
+            let result = translations;
+            
+            for (const k of keys) {
+                if (result && result[k]) {
+                    result = result[k];
+                } else {
+                    return null;
+                }
+            }
+            
+            return result;
+        }
+
+        function updateDynamicSections() {
+            // Update products section
+            const productsSection = document.getElementById('products-section');
+            if (productsSection && !productsSection.classList.contains('hidden')) {
+                updateProductsSection();
+            }
+            
+            // Update shopping list section
+            const shoppingSection = document.getElementById('shopping-list-section');
+            if (shoppingSection && !shoppingSection.classList.contains('hidden')) {
+                updateShoppingListSection();
+            }
+            
+            // Update analytics section
+            const analyticsSection = document.getElementById('analytics-section');
+            if (analyticsSection && !analyticsSection.classList.contains('hidden')) {
+                updateAnalyticsSection();
+            }
+        }
+
+        function updateProductsSection() {
+            const t = translations[currentLanguage].products;
+            
+            // Update filter options
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (categoryFilter && categoryFilter.options.length > 0) {
+                categoryFilter.options[0].text = t.all_categories;
+            }
+            
+            const sortFilter = document.getElementById('sortFilter');
+            if (sortFilter && sortFilter.options.length > 0) {
+                sortFilter.options[0].text = t.sort_name;
+                sortFilter.options[1].text = t.sort_price;
+                sortFilter.options[2].text = t.sort_savings;
+            }
+        }
+
+        function updateShoppingListSection() {
+            // This will be called when shopping list section is shown
+            // Re-render the content with new language
+        }
+
+        function updateAnalyticsSection() {
+            // This will be called when analytics section is shown
+            // Re-render the content with new language
+        }
+
+        // Translated notification function
+        function showLocalizedNotification(key, type = 'info') {
+            const translation = getTranslation(`notifications.${key}`, translations[currentLanguage]);
+            const message = translation || key;
+            showNotification(message, type);
+        }
+
+        // Initialize language on page load
+        function initializeLanguage() {
+            updateLanguageDisplay();
+            updateAllTexts();
+        }
+
+        // ============= END MULTILINGUAL SYSTEM =============
     </script>
 </body>
 </html> 

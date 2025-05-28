@@ -1,0 +1,32 @@
+{
+  "name": "smartshop-ai-frontend",
+  "version": "1.0.0",
+  "description": "SmartShop AI - Frontend Application",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000 --host=localhost --open=index.html",
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "echo 'CSS build completed'",
+    "build:js": "echo 'JS build completed'",
+    "serve": "live-server --port=3000 --host=localhost --open=index.html",
+    "preview": "live-server --port=3001 --host=localhost --open=index.html"
+  },
+  "keywords": [
+    "smartshop",
+    "ai",
+    "price-comparison",
+    "frontend",
+    "shopping"
+  ],
+  "author": "SmartShop AI Team",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+} 

@@ -1,67 +1,59 @@
 {
   "name": "smartshop-ai",
   "version": "1.0.0",
-  "description": "Intelligent Price Comparison & Shopping Optimization Platform for Polish Market",
+  "description": "SmartShop AI - Full Stack Price Comparison Platform",
   "private": true,
   "workspaces": [
-    "frontend",
-    "backend",
-    "ai-engine"
+    "src/frontend",
+    "src/backend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:ai\"",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:ai": "cd ai-engine && python main.py",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd src/frontend && npm run dev",
+    "dev:backend": "cd src/backend && npm run dev",
     "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd frontend && npm run build",
-    "build:backend": "cd backend && npm run build",
-    "test": "npm run test:frontend && npm run test:backend && npm run test:ai",
-    "test:frontend": "cd frontend && npm test",
-    "test:backend": "cd backend && npm test",
-    "test:ai": "cd ai-engine && pytest",
-    "lint": "npm run lint:frontend && npm run lint:backend",
-    "lint:frontend": "cd frontend && npm run lint",
-    "lint:backend": "cd backend && npm run lint",
-    "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
-    "docker:prod": "docker-compose -f docker-compose.prod.yml up --build",
-    "setup": "npm install && npm run setup:frontend && npm run setup:backend && npm run setup:ai",
-    "setup:frontend": "cd frontend && npm install",
-    "setup:backend": "cd backend && npm install",
-    "setup:ai": "cd ai-engine && pip install -r requirements.txt",
-    "db:migrate": "cd backend && npx prisma migrate dev",
-    "db:seed": "cd backend && npm run seed",
-    "start": "npm run start:frontend & npm run start:backend & npm run start:ai",
-    "start:frontend": "cd frontend && npm start",
-    "start:backend": "cd backend && npm start",
-    "start:ai": "cd ai-engine && gunicorn main:app"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0",
-    "@types/node": "^20.0.0"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "build:frontend": "cd src/frontend && npm run build",
+    "build:backend": "cd src/backend && npm run build",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "cd src/frontend && npm run serve",
+    "start:backend": "cd src/backend && npm run start",
+    "install:all": "npm install && cd src/frontend && npm install && cd ../backend && npm install",
+    "clean": "rm -rf node_modules src/*/node_modules src/*/dist",
+    "lint": "cd src/backend && npm run lint",
+    "test": "cd src/backend && npm run test",
+    "docker:build": "cd src/backend && npm run docker:build",
+    "docker:run": "cd src/backend && npm run docker:run",
+    "prisma:generate": "cd src/backend && npm run prisma:generate",
+    "prisma:migrate": "cd src/backend && npm run prisma:migrate",
+    "prisma:studio": "cd src/backend && npm run prisma:studio"
   },
   "keywords": [
-    "price-comparison",
-    "grocery",
+    "smartshop",
     "ai",
-    "optimization",
-    "poland",
+    "price-comparison",
+    "e-commerce",
     "shopping",
-    "smart",
-    "budget"
+    "optimization",
+    "fullstack",
+    "typescript",
+    "nodejs",
+    "express"
   ],
   "author": "SmartShop AI Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/smartshop-ai/smartshop-ai.git"
+    "url": "https://github.com/your-username/SmartshopAi.git"
   },
   "bugs": {
-    "url": "https://github.com/smartshop-ai/smartshop-ai/issues"
+    "url": "https://github.com/your-username/SmartshopAi/issues"
   },
-  "homepage": "https://smartshop-ai.com"
+  "homepage": "https://github.com/your-username/SmartshopAi#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
 } 
