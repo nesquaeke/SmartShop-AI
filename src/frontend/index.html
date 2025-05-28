@@ -9,156 +9,258 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Base Styles */
+        /* ============= ENHANCED THEME SYSTEM ============= */
         :root {
-            --bg-primary: theme('colors.gray.50');
-            --bg-secondary: rgba(255, 255, 255, 0.7);
-            --bg-card: rgba(255, 255, 255, 0.8);
-            --text-primary: theme('colors.gray.900');
-            --text-secondary: theme('colors.gray.600');
-            --text-muted: theme('colors.gray.500');
-            --border-color: theme('colors.gray.200');
-            --header-bg: rgba(255, 255, 255, 0.8);
-            --dropdown-bg: white;
-            --dropdown-hover: theme('colors.gray.100');
+            /* Light Theme */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-surface: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-accent: #3b82f6;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --shadow-color: rgba(15, 23, 42, 0.1);
+            --shadow-strong: rgba(15, 23, 42, 0.15);
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --dropdown-bg: #ffffff;
+            --dropdown-hover: #f1f5f9;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
         }
 
         [data-theme="dark"] {
-            --bg-primary: theme('colors.gray.900');
-            --bg-secondary: rgba(17, 24, 39, 0.8);
-            --bg-card: rgba(31, 41, 55, 0.8);
-            --text-primary: theme('colors.gray.100');
-            --text-secondary: theme('colors.gray.300');
-            --text-muted: theme('colors.gray.400');
-            --border-color: theme('colors.gray.700');
-            --header-bg: rgba(17, 24, 39, 0.8);
-            --dropdown-bg: theme('colors.gray.800');
-            --dropdown-hover: theme('colors.gray.700');
+            /* Dark Theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-surface: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-accent: #60a5fa;
+            --border-color: #334155;
+            --border-hover: #475569;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-strong: rgba(0, 0, 0, 0.5);
+            --header-bg: rgba(30, 41, 59, 0.9);
+            --dropdown-bg: #1e293b;
+            --dropdown-hover: #334155;
+            --accent-primary: #60a5fa;
+            --accent-secondary: #a78bfa;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+        }
+
+        /* ============= BASE STYLES ============= */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         body { 
             font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
 
-        /* Theme-aware background */
+        /* Enhanced Background Gradients */
         .theme-bg-primary {
-            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        [data-theme="dark"] .theme-bg-primary {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
         }
 
         .theme-bg-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px var(--shadow-color);
         }
 
         .theme-text-primary { color: var(--text-primary); }
         .theme-text-secondary { color: var(--text-secondary); }
         .theme-text-muted { color: var(--text-muted); }
+        .theme-text-accent { color: var(--text-accent); }
 
-        /* Dark mode specific gradients */
-        [data-theme="dark"] .gradient-bg {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
+        /* ============= ENHANCED GRADIENTS ============= */
+        .gradient-primary { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
         }
-
-        .gradient-bg {
-            background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 50%, #d1d5db 100%);
-        }
-
-        .gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .gradient-secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         
+        [data-theme="dark"] .gradient-primary {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+        }
+
+        .gradient-secondary { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+        }
+
+        [data-theme="dark"] .gradient-secondary {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+
+        /* ============= ENHANCED CARDS ============= */
         .card-premium { 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(16px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
         }
+
         .card-premium:hover { 
             transform: translateY(-8px) scale(1.02); 
-            box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 25px 50px -12px var(--shadow-strong);
+            border-color: var(--border-hover);
+        }
+
+        [data-theme="dark"] .card-premium {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+            border-color: var(--border-color);
         }
 
         [data-theme="dark"] .card-premium:hover {
-            box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(71, 85, 105, 0.7) 100%);
         }
 
-        .store-lidl { background: linear-gradient(135deg, #0050aa, #003d82); }
-        .store-biedronka { background: linear-gradient(135deg, #e31e24, #b01419); }
-        .store-auchan { background: linear-gradient(135deg, #ff6900, #e55100); }
+        /* ============= STORE COLORS (Enhanced) ============= */
+        .store-lidl { 
+            background: linear-gradient(135deg, #0050aa, #003d82); 
+            color: white;
+        }
         
+        [data-theme="dark"] .store-lidl {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .store-biedronka { 
+            background: linear-gradient(135deg, #e31e24, #b01419); 
+            color: white;
+        }
+
+        [data-theme="dark"] .store-biedronka {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .store-auchan { 
+            background: linear-gradient(135deg, #ff6900, #e55100); 
+            color: white;
+        }
+
+        [data-theme="dark"] .store-auchan {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+        }
+
+        /* ============= ANIMATIONS ============= */
         .floating-animation {
             animation: float 6s ease-in-out infinite;
         }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
         }
-        
+
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 20px var(--accent-primary); }
+            to { box-shadow: 0 0 30px var(--accent-secondary), 0 0 40px var(--accent-primary); }
+        }
+
+        /* ============= LOADING SPINNER ============= */
         .loading-spinner {
             border: 3px solid var(--border-color);
-            border-top: 3px solid #667eea;
+            border-top: 3px solid var(--accent-primary);
             border-radius: 50%;
             width: 24px;
             height: 24px;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
+        /* ============= ENHANCED NOTIFICATIONS ============= */
         .notification { 
             transform: translateX(100%); 
-            transition: transform 0.3s ease-in-out; 
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
         }
+
         .notification.show { 
             transform: translateX(0); 
         }
-        
+
+        /* ============= DROPDOWN ENHANCEMENTS ============= */
         .language-selector {
             position: relative;
         }
+
         .language-dropdown {
             position: absolute;
             top: 100%;
             right: 0;
             background: var(--dropdown-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color);
+            backdrop-filter: blur(16px);
             z-index: 50;
-            min-width: 120px;
+            min-width: 140px;
             display: none;
-        }
-        .language-dropdown.show {
-            display: block;
-        }
-        .language-option {
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            color: var(--text-primary);
-        }
-        .language-option:hover {
-            background-color: var(--dropdown-hover);
-        }
-        .language-option:first-child {
-            border-radius: 12px 12px 0 0;
-        }
-        .language-option:last-child {
-            border-radius: 0 0 12px 12px;
+            overflow: hidden;
         }
 
-        /* Dark Mode Toggle Button */
+        .language-dropdown.show {
+            display: block;
+            animation: dropdownSlideIn 0.3s ease-out;
+        }
+
+        @keyframes dropdownSlideIn {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .language-option {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .language-option:hover {
+            background: var(--dropdown-hover);
+            transform: translateX(4px);
+        }
+
+        /* ============= THEME TOGGLE ENHANCEMENT ============= */
         .theme-toggle {
             position: relative;
-            width: 50px;
-            height: 24px;
+            width: 60px;
+            height: 28px;
             background: var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
         .theme-toggle::before {
@@ -166,53 +268,205 @@
             position: absolute;
             top: 2px;
             left: 2px;
-            width: 20px;
-            height: 20px;
-            background: white;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
             border-radius: 50%;
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
         }
 
         [data-theme="dark"] .theme-toggle {
-            background: #4f46e5;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
         }
 
         [data-theme="dark"] .theme-toggle::before {
-            transform: translateX(26px);
+            transform: translateX(32px);
+            background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+            box-shadow: 0 2px 8px rgba(229, 231, 235, 0.3);
         }
 
-        /* Input and form controls dark mode */
-        [data-theme="dark"] input[type="text"],
-        [data-theme="dark"] input[type="number"],
-        [data-theme="dark"] select {
+        /* ============= ENHANCED INPUTS ============= */
+        input[type="text"],
+        input[type="number"],
+        select {
             background: var(--bg-card);
-            border-color: var(--border-color);
+            border: 2px solid var(--border-color);
             color: var(--text-primary);
+            transition: all 0.3s ease;
         }
 
-        [data-theme="dark"] input[type="text"]:focus,
-        [data-theme="dark"] input[type="number"]:focus,
-        [data-theme="dark"] select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* ============= ENHANCED BUTTONS ============= */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px var(--shadow-color);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--dropdown-hover);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        /* ============= ENHANCED NAVIGATION ============= */
+        .nav-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-button:hover::before {
+            left: 100%;
+        }
+
+        .nav-button.active {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        /* ============= ENHANCED STATS CARDS ============= */
+        .stats-icon {
+            transition: all 0.3s ease;
+        }
+
+        .card-premium:hover .stats-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* ============= GLASSMORPHISM EFFECTS ============= */
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="dark"] .glass-effect {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        /* ============= ENHANCED HEADER ============= */
+        .header-bg {
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* ============= ENHANCED SCROLLBAR ============= */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-hover);
+        }
+
+        /* ============= GLOW EFFECTS ============= */
+        .glow-primary {
+            box-shadow: 0 0 20px var(--accent-primary);
+        }
+
+        .glow-success {
+            box-shadow: 0 0 20px var(--success);
+        }
+
+        /* ============= ENHANCED TYPOGRAPHY ============= */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="dark"] .text-gradient {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ============= PRODUCT CARD ENHANCEMENTS ============= */
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px var(--shadow-strong);
+        }
+
+        .product-image {
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
         }
     </style>
 </head>
-<body class="gradient-bg theme-text-primary min-h-screen">
+<body class="theme-bg-primary min-h-screen">
     <!-- Notification Container -->
     <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <!-- Header -->
-    <header class="theme-bg-card backdrop-blur-lg sticky top-0 z-40 border-b border-white/20">
+    <header class="header-bg sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 gradient-primary rounded-2xl flex items-center justify-center floating-animation">
+                    <div class="w-12 h-12 gradient-primary rounded-2xl flex items-center justify-center floating-animation pulse-glow">
                         <i data-lucide="shopping-cart" class="text-white w-7 h-7"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <h1 class="text-2xl font-bold text-gradient">
                             SmartShop AI
                         </h1>
                         <p class="text-xs theme-text-muted" data-text="subtitle">Full Application</p>
@@ -220,10 +474,10 @@
                 </div>
                 
                 <nav class="hidden lg:flex space-x-1">
-                    <button onclick="showSection('home')" class="px-4 py-2 rounded-xl bg-blue-500 text-white font-medium" data-text="nav.dashboard">Dashboard</button>
-                    <button onclick="showSection('products')" class="px-4 py-2 rounded-xl theme-text-secondary hover:bg-white/50" data-text="nav.products">Produkty</button>
-                    <button onclick="showSection('shopping-list')" class="px-4 py-2 rounded-xl theme-text-secondary hover:bg-white/50" data-text="nav.shopping_list">Lista Zakupów</button>
-                    <button onclick="showSection('analytics')" class="px-4 py-2 rounded-xl theme-text-secondary hover:bg-white/50" data-text="nav.analytics">Analityka</button>
+                    <button onclick="showSection('home')" class="nav-button active px-4 py-2 rounded-xl font-medium" data-text="nav.dashboard">Dashboard</button>
+                    <button onclick="showSection('products')" class="nav-button btn-secondary px-4 py-2 rounded-xl" data-text="nav.products">Produkty</button>
+                    <button onclick="showSection('shopping-list')" class="nav-button btn-secondary px-4 py-2 rounded-xl" data-text="nav.shopping_list">Lista Zakupów</button>
+                    <button onclick="showSection('analytics')" class="nav-button btn-secondary px-4 py-2 rounded-xl" data-text="nav.analytics">Analityka</button>
                 </nav>
                 
                 <div class="flex items-center space-x-3">
@@ -236,7 +490,7 @@
                     
                     <!-- Language Selector -->
                     <div class="language-selector">
-                        <button id="languageBtn" onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 p-2 rounded-xl theme-text-secondary hover:bg-white/50 transition-all">
+                        <button id="languageBtn" onclick="toggleLanguageDropdown()" class="btn-secondary flex items-center space-x-2 p-2 rounded-xl transition-all">
                             <span id="currentFlag">🇵🇱</span>
                             <span id="currentLang" class="text-sm font-medium">PL</span>
                             <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -253,11 +507,11 @@
                         </div>
                     </div>
                     
-                    <button id="refreshDataBtn" onclick="refreshAllData()" class="p-2 rounded-xl theme-text-secondary hover:bg-white/50 transition-all">
+                    <button id="refreshDataBtn" onclick="refreshAllData()" class="btn-secondary p-2 rounded-xl transition-all">
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                     </button>
                     <div class="text-sm theme-text-muted">
-                        <span data-text="status">Status</span>: <span id="apiStatus" class="font-medium text-green-600" data-text="status.online">Online</span>
+                        <span data-text="status">Status</span>: <span id="apiStatus" class="font-medium text-green-500" data-text="status.online">Online</span>
                     </div>
                 </div>
             </div>
@@ -277,14 +531,14 @@
                             <input 
                                 type="text" 
                                 data-placeholder="search.placeholder"
-                                class="w-full pl-12 pr-4 py-3 theme-bg-card rounded-xl border-2 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none theme-text-primary"
+                                class="w-full pl-12 pr-4 py-3 rounded-xl outline-none theme-text-primary"
                                 id="globalSearch"
                             >
                         </div>
-                        <button onclick="searchProducts()" class="gradient-primary text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                        <button onclick="searchProducts()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
                             <i data-lucide="search" class="w-5 h-5"></i>
                         </button>
-                        <button onclick="triggerScraping()" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition-all">
+                        <button onclick="triggerScraping()" class="gradient-secondary text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
                             <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
                         </button>
                     </div>
@@ -293,45 +547,45 @@
 
             <!-- Stats Dashboard -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="card-premium rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <i data-lucide="package" class="text-blue-600 w-6 h-6"></i>
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center stats-icon">
+                            <i data-lucide="package" class="text-blue-600 dark:text-blue-400 w-6 h-6"></i>
                         </div>
-                        <span id="productsCount" class="text-2xl font-bold text-blue-600">0</span>
+                        <span id="productsCount" class="text-2xl font-bold theme-text-accent">0</span>
                     </div>
                     <h3 class="font-semibold theme-text-primary" data-text="stats.products">Produkty</h3>
                     <p class="text-sm theme-text-muted" data-text="stats.products_desc">W bazie danych</p>
                 </div>
                 
-                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="card-premium rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                            <i data-lucide="trending-down" class="text-green-600 w-6 h-6"></i>
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center stats-icon">
+                            <i data-lucide="trending-down" class="text-green-600 dark:text-green-400 w-6 h-6"></i>
                         </div>
-                        <span id="savingsAmount" class="text-2xl font-bold text-green-600">0 PLN</span>
+                        <span id="savingsAmount" class="text-2xl font-bold text-green-500">0 PLN</span>
                     </div>
                     <h3 class="font-semibold theme-text-primary" data-text="stats.savings">Oszczędności</h3>
                     <p class="text-sm theme-text-muted" data-text="stats.savings_desc">Miesięczne</p>
                 </div>
                 
-                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="card-premium rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <i data-lucide="store" class="text-purple-600 w-6 h-6"></i>
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center stats-icon">
+                            <i data-lucide="store" class="text-purple-600 dark:text-purple-400 w-6 h-6"></i>
                         </div>
-                        <span class="text-2xl font-bold text-purple-600">3</span>
+                        <span class="text-2xl font-bold text-purple-500">3</span>
                     </div>
                     <h3 class="font-semibold theme-text-primary" data-text="stats.stores">Sklepy</h3>
                     <p class="text-sm theme-text-muted" data-text="stats.stores_desc">Aktywne</p>
                 </div>
                 
-                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="card-premium rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                            <i data-lucide="bell" class="text-red-600 w-6 h-6"></i>
+                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center stats-icon">
+                            <i data-lucide="bell" class="text-red-600 dark:text-red-400 w-6 h-6"></i>
                         </div>
-                        <span id="alertsCount" class="text-2xl font-bold text-red-600">0</span>
+                        <span id="alertsCount" class="text-2xl font-bold text-red-500">0</span>
                     </div>
                     <h3 class="font-semibold theme-text-primary" data-text="stats.alerts">Alarmy</h3>
                     <p class="text-sm theme-text-muted" data-text="stats.alerts_desc">Aktywne</p>
@@ -339,9 +593,9 @@
             </div>
 
             <!-- AI Recommendations -->
-            <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 mb-8">
+            <div class="card-premium rounded-2xl p-6 mb-8">
                 <h3 class="text-xl font-bold theme-text-primary mb-4 flex items-center">
-                    <i data-lucide="brain" class="w-6 h-6 mr-2 text-purple-600"></i>
+                    <i data-lucide="brain" class="w-6 h-6 mr-2 text-purple-500"></i>
                     <span data-text="ai.recommendations">AI Rekomendacje</span>
                 </h3>
                 <div id="aiRecommendations" class="space-y-4">
@@ -350,7 +604,7 @@
             </div>
 
             <!-- Recent Products -->
-            <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6">
+            <div class="card-premium rounded-2xl p-6">
                 <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="recent.products">Najnowsze Produkty</h3>
                 <div id="recentProducts" class="grid gap-4">
                     <!-- Recent products will be loaded here -->
@@ -363,10 +617,10 @@
             <div class="mb-6">
                 <h2 class="text-3xl font-bold theme-text-primary mb-4" data-text="products.catalog">Katalog Produktów</h2>
                 <div class="flex gap-4 mb-4">
-                    <select id="categoryFilter" class="px-4 py-2 theme-bg-card rounded-lg theme-text-primary">
+                    <select id="categoryFilter" class="px-4 py-2 rounded-lg">
                         <option value="all" data-text="products.all_categories">Wszystkie kategorie</option>
                     </select>
-                    <select id="sortFilter" class="px-4 py-2 theme-bg-card rounded-lg theme-text-primary">
+                    <select id="sortFilter" class="px-4 py-2 rounded-lg">
                         <option value="name" data-text="products.sort_name">Sortuj po nazwie</option>
                         <option value="price" data-text="products.sort_price">Sortuj po cenie</option>
                         <option value="savings" data-text="products.sort_savings">Sortuj po oszczędnościach</option>
@@ -381,17 +635,17 @@
         <!-- Shopping List Section -->
         <div id="shopping-list-section" class="section hidden">
             <div class="grid lg:grid-cols-2 gap-8">
-                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6">
+                <div class="card-premium rounded-2xl p-6">
                     <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="shopping.title">Twoja Lista Zakupów</h3>
                     <div id="shoppingListContainer">
                         <!-- Shopping list will be loaded here -->
                     </div>
-                    <button onclick="optimizeRoute()" class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700" data-text="shopping.optimize_route">
+                    <button onclick="optimizeRoute()" class="btn-primary w-full mt-4 py-3 rounded-lg font-semibold" data-text="shopping.optimize_route">
                         🚀 Optymalizuj Trasę
                     </button>
                 </div>
                 
-                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6">
+                <div class="card-premium rounded-2xl p-6">
                     <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="shopping.optimized_route">Optymalna Trasa</h3>
                     <div id="optimizedRoute">
                         <!-- Optimized route will be shown here -->
@@ -402,22 +656,22 @@
 
         <!-- Analytics Section -->
         <div id="analytics-section" class="section hidden">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6" data-text="analytics.title">Analityka i Raporty</h2>
+            <h2 class="text-3xl font-bold theme-text-primary mb-6" data-text="analytics.title">Analityka i Raporty</h2>
             
             <div class="grid lg:grid-cols-2 gap-8 mb-8">
-                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="analytics.price_trends">Historia Cen</h3>
+                <div class="card-premium rounded-2xl p-6">
+                    <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="analytics.price_trends">Historia Cen</h3>
                     <canvas id="priceChart" width="400" height="200"></canvas>
                 </div>
                 
-                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="analytics.savings_breakdown">Oszczędności</h3>
+                <div class="card-premium rounded-2xl p-6">
+                    <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="analytics.savings_breakdown">Oszczędności</h3>
                     <canvas id="savingsChart" width="400" height="200"></canvas>
                 </div>
             </div>
             
-            <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="analytics.price_alerts">Aktywne Alarmy Cenowe</h3>
+            <div class="card-premium rounded-2xl p-6">
+                <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="analytics.price_alerts">Aktywne Alarmy Cenowe</h3>
                 <div id="priceAlerts">
                     <!-- Price alerts will be loaded here -->
                 </div>
@@ -601,7 +855,7 @@
             try {
                 await apiCall('/health');
                 document.getElementById('apiStatus').textContent = 'Online';
-                document.getElementById('apiStatus').className = 'font-medium text-green-600';
+                document.getElementById('apiStatus').className = 'font-medium text-green-500';
             } catch (error) {
                 document.getElementById('apiStatus').textContent = 'Demo Mode';
                 document.getElementById('apiStatus').className = 'font-medium text-yellow-600';
@@ -614,12 +868,12 @@
             const recentGrid = document.getElementById('recentProducts');
             
             const productHTML = products.map(product => `
-                <div class="bg-white rounded-xl p-6 shadow-lg card-premium">
+                <div class="product-card rounded-xl p-6 shadow-lg card-premium">
                     <div class="flex gap-4">
-                        <img src="${product.image}" alt="${product.name}" class="w-24 h-24 object-cover rounded-lg">
+                        <img src="${product.image}" alt="${product.name}" class="product-image w-24 h-24 object-cover rounded-lg">
                         <div class="flex-1">
-                            <h4 class="font-semibold text-gray-900 mb-2">${product.name}</h4>
-                            <p class="text-gray-600 text-sm mb-3">${product.description}</p>
+                            <h4 class="font-semibold theme-text-primary mb-2">${product.name}</h4>
+                            <p class="theme-text-secondary text-sm mb-3">${product.description}</p>
                             <div class="flex gap-2 mb-3">
                                 ${product.prices.map(price => `
                                     <span class="px-2 py-1 rounded text-xs font-medium ${getStoreClass(price.store)}">
@@ -629,11 +883,11 @@
                                 `).join('')}
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-green-600 font-semibold">
+                                <span class="text-green-500 font-semibold">
                                     💰 Oszczędność: ${Math.max(...product.prices.map(p => p.discount))} PLN
                                 </span>
                                 <button onclick="addToShoppingList('${product.id}')" 
-                                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+                                        class="btn-primary px-4 py-2 rounded-lg transition-all">
                                     Dodaj do Listy
                                 </button>
                             </div>
@@ -651,17 +905,17 @@
             if (!container) return;
             
             const html = recommendations.map(rec => `
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="card-premium border-blue-200 dark:border-blue-800 rounded-lg p-4">
                     <div class="flex items-start space-x-3">
-                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                        <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center">
                             <i data-lucide="lightbulb" class="text-white w-4 h-4"></i>
                         </div>
                         <div class="flex-1">
-                            <h4 class="font-semibold text-blue-900">${rec.title}</h4>
-                            <p class="text-blue-700 mt-1">${rec.message}</p>
+                            <h4 class="font-semibold theme-text-primary">${rec.title}</h4>
+                            <p class="theme-text-secondary mt-1">${rec.message}</p>
                             ${rec.action ? `
                                 <button onclick="handleRecommendationAction('${rec.action}', '${rec.productId || ''}')" 
-                                        class="text-blue-600 text-sm font-medium mt-2 hover:underline">
+                                        class="theme-text-accent text-sm font-medium mt-2 hover:underline">
                                     Akcja
                                 </button>
                             ` : ''}
@@ -679,19 +933,19 @@
             if (!container) return;
             
             if (shoppingList.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Lista zakupów jest pusta</p>';
+                container.innerHTML = '<p class="theme-text-muted text-center py-8">Lista zakupów jest pusta</p>';
                 return;
             }
             
             const html = shoppingList.map(item => `
-                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg mb-2">
+                <div class="flex items-center justify-between card-premium p-4 rounded-lg mb-2">
                     <div class="flex items-center space-x-3">
                         <input type="checkbox" class="w-5 h-5 text-blue-600">
-                        <span>${item.name}</span>
+                        <span class="theme-text-primary">${item.name}</span>
                     </div>
                     <div class="text-right">
-                        <div class="font-semibold">${item.price} PLN</div>
-                        <div class="text-sm text-gray-500">${item.selectedStore}</div>
+                        <div class="font-semibold theme-text-primary">${item.price} PLN</div>
+                        <div class="text-sm theme-text-muted">${item.selectedStore}</div>
                     </div>
                 </div>
             `).join('');
@@ -704,19 +958,19 @@
             if (!container) return;
             
             if (alerts.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Brak aktywnych alarmów cenowych</p>';
+                container.innerHTML = '<p class="theme-text-muted text-center py-8">Brak aktywnych alarmów cenowych</p>';
                 return;
             }
             
             const html = alerts.map(alert => `
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg mb-2">
+                <div class="flex items-center justify-between p-4 card-premium rounded-lg mb-2">
                     <div>
-                        <h4 class="font-semibold">${alert.productName}</h4>
-                        <p class="text-sm text-gray-600">Cel: ${alert.targetPrice} PLN</p>
+                        <h4 class="font-semibold theme-text-primary">${alert.productName}</h4>
+                        <p class="text-sm theme-text-secondary">Cel: ${alert.targetPrice} PLN</p>
                     </div>
                     <div class="text-right">
-                        <div class="font-semibold">${alert.currentPrice} PLN</div>
-                        <div class="text-sm ${alert.status === 'triggered' ? 'text-green-600' : 'text-yellow-600'}">
+                        <div class="font-semibold theme-text-primary">${alert.currentPrice} PLN</div>
+                        <div class="text-sm ${alert.status === 'triggered' ? 'text-green-500' : 'text-yellow-500'}">
                             ${alert.status === 'triggered' ? 'Osiągnięte!' : 'Aktywny'}
                         </div>
                     </div>
@@ -859,26 +1113,43 @@
             
             const html = `
                 <div class="space-y-4">
-                    <div class="bg-green-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-green-900">Optymalna Trasa:</h4>
-                        <p class="text-green-700">${routeData.route.join(' → ')}</p>
-                        <div class="grid grid-cols-2 gap-4 mt-3 text-sm">
-                            <div>⏱️ Czas: ${routeData.estimatedTime} min</div>
-                            <div>💰 Oszczędność: ${routeData.totalSavings} PLN</div>
+                    <div class="card-premium p-4 rounded-lg border-l-4 border-green-500">
+                        <h4 class="font-semibold theme-text-primary flex items-center">
+                            <i data-lucide="route" class="w-5 h-5 mr-2 text-green-500"></i>
+                            Optymalna Trasa:
+                        </h4>
+                        <p class="theme-text-secondary mt-2">${routeData.route.join(' → ')}</p>
+                        <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
+                            <div class="flex items-center theme-text-muted">
+                                <i data-lucide="clock" class="w-4 h-4 mr-1"></i>
+                                Czas: ${routeData.estimatedTime} min
+                            </div>
+                            <div class="flex items-center text-green-500">
+                                <i data-lucide="piggy-bank" class="w-4 h-4 mr-1"></i>
+                                Oszczędność: ${routeData.totalSavings} PLN
+                            </div>
                         </div>
                     </div>
                     
                     ${routeData.storeDetails.map(store => `
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold">${store.store}</h5>
-                            <p class="text-sm text-gray-600">${store.items.length} produktów</p>
-                            <p class="font-semibold">Razem: ${store.subtotal.toFixed(2)} PLN</p>
+                        <div class="card-premium p-4 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-semibold theme-text-primary flex items-center">
+                                    <i data-lucide="store" class="w-4 h-4 mr-2 text-purple-500"></i>
+                                    ${store.store}
+                                </h5>
+                                <span class="text-sm theme-text-muted">${store.items.length} produktów</span>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold theme-text-accent">Razem: ${store.subtotal.toFixed(2)} PLN</p>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
             `;
             
             container.innerHTML = html;
+            lucide.createIcons();
         }
 
         function handleRecommendationAction(action, productId) {
@@ -921,11 +1192,11 @@
             document.getElementById(`${sectionName}-section`).classList.remove('hidden');
             
             // Update navigation
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.className = 'px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50';
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.className = 'nav-button btn-secondary px-4 py-2 rounded-xl';
             });
             
-            event.target.className = 'px-4 py-2 rounded-xl bg-blue-500 text-white font-medium';
+            event.target.className = 'nav-button active px-4 py-2 rounded-xl font-medium';
             
             currentSection = sectionName;
             
@@ -1051,22 +1322,47 @@
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             applyTheme(newTheme);
             
-            // Show notification
+            // Enhanced visual feedback
+            const toggle = document.querySelector('.theme-toggle');
+            toggle.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                toggle.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Show enhanced notification with icons
             const message = newTheme === 'dark' 
-                ? '🌙 Karanlık mod aktif' 
-                : '☀️ Aydınlık mod aktif';
+                ? '🌙 Karanlık mod aktif - Gözleriniz teşekkür ediyor!' 
+                : '☀️ Aydınlık mod aktif - Güneşli görünüm!';
             showNotification(message, 'success');
+            
+            // Add glow effect to all cards
+            document.querySelectorAll('.card-premium').forEach(card => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.transform = 'scale(1.01)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 300);
+            });
         }
 
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('smartshop_theme', theme);
             
-            // Update theme toggle appearance
+            // Update theme toggle appearance with smooth transition
             const toggle = document.querySelector('.theme-toggle');
             if (toggle) {
-                toggle.style.background = theme === 'dark' ? '#4f46e5' : '#e5e7eb';
+                toggle.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
             }
+            
+            // Update scrollbar color smoothly
+            document.documentElement.style.setProperty('--scrollbar-track', 
+                theme === 'dark' ? '#1e293b' : '#f1f5f9'
+            );
+            document.documentElement.style.setProperty('--scrollbar-thumb', 
+                theme === 'dark' ? '#334155' : '#cbd5e1'
+            );
         }
 
         // ============= END THEME SYSTEM =============
