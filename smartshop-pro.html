@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartShop AI - Inteligentna Platforma Zakupowa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .card-premium { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+        .card-premium:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.15);
+        }
+        .store-lidl { background: linear-gradient(135deg, #0050aa, #003d82); }
+        .store-biedronka { background: linear-gradient(135deg, #e31e24, #b01419); }
+        .store-auchan { background: linear-gradient(135deg, #ff6900, #e55100); }
+        .savings-pulse { 
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .notification-badge {
+            animation: bounce 2s infinite;
+        }
+        .price-highlight {
+            position: relative;
+            overflow: hidden;
+        }
+        .price-highlight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .price-highlight:hover::before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 min-h-screen">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 z-50 gradient-primary flex items-center justify-center">
+        <div class="text-center text-white">
+            <div class="w-20 h-20 mx-auto mb-4 relative">
+                <div class="absolute inset-0 border-4 border-white/30 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-t-white rounded-full animate-spin"></div>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">SmartShop AI</h2>
+            <p class="text-blue-100">Ładowanie inteligentnej platformy...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="glassmorphism sticky top-0 z-40 backdrop-blur-lg border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-18">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 gradient-primary rounded-2xl flex items-center justify-center floating-animation">
+                        <i data-lucide="shopping-cart" class="text-white w-7 h-7"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            SmartShop AI
+                        </h1>
+                        <p class="text-xs text-gray-500">Inteligentne Zakupy</p>
+                    </div>
+                </div>
+                
+                <nav class="hidden lg:flex space-x-1">
+                    <a href="#" class="px-4 py-2 rounded-xl bg-blue-500 text-white font-medium shadow-lg">Strona Główna</a>
+                    <a href="#" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50 hover:text-gray-900 transition-all">Produkty</a>
+                    <a href="#" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50 hover:text-gray-900 transition-all">Listy Zakupów</a>
+                    <a href="#" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50 hover:text-gray-900 transition-all relative">
+                        Alarmy Cenowe
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full notification-badge"></span>
+                    </a>
+                    <a href="#" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50 hover:text-gray-900 transition-all">Analityka</a>
+                </nav>
+                
+                <div class="flex items-center space-x-3">
+                    <button class="p-2 rounded-xl text-gray-600 hover:bg-white/50 transition-all relative">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    </button>
+                    <button class="gradient-primary text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all transform hover:scale-105">
+                        Zaloguj się
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-24 overflow-hidden">
+        <div class="absolute inset-0 gradient-primary opacity-10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 mb-6">
+                    <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                    <span class="text-sm font-medium text-gray-700">🔥 Nowe: AI Price Prediction dostępne!</span>
+                </div>
+                
+                <h2 class="text-6xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        Rewolucja w Zakupach
+                    </span>
+                    <br>
+                    <span class="text-gray-800">z Mocą AI</span>
+                </h2>
+                
+                <p class="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+                    Wykorzystaj sztuczną inteligencję do znalezienia najlepszych cen w LIDL, Biedronce i Auchan. 
+                    Oszczędzaj do <span class="font-bold text-green-600">30% miesięcznie</span> z inteligentną optymalizacją tras!
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto mb-8">
+                    <div class="flex-1 relative">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                        <input 
+                            type="text" 
+                            placeholder="Wyszukaj produkty AI-powered (np. mleko, chleb, jabłka)"
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-white/50 bg-white/80 backdrop-blur-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none text-gray-700 font-medium transition-all"
+                            id="productSearch"
+                        >
+                    </div>
+                    <button class="gradient-secondary text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105" onclick="searchProducts()">
+                        <i data-lucide="sparkles" class="inline w-5 h-5 mr-2"></i>
+                        Szukaj AI
+                    </button>
+                </div>
+                
+                <div class="flex items-center justify-center space-x-8 text-sm text-gray-500">
+                    <div class="flex items-center">
+                        <i data-lucide="shield-check" class="w-4 h-4 mr-1 text-green-500"></i>
+                        100% Bezpieczne
+                    </div>
+                    <div class="flex items-center">
+                        <i data-lucide="zap" class="w-4 h-4 mr-1 text-yellow-500"></i>
+                        Aktualizacje Real-time
+                    </div>
+                    <div class="flex items-center">
+                        <i data-lucide="heart" class="w-4 h-4 mr-1 text-red-500"></i>
+                        100k+ Użytkowników
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent mb-2">
+                        <span class="counter" data-target="50000">0</span>+
+                    </div>
+                    <div class="text-gray-600 font-medium">Produktów w Bazie</div>
+                    <div class="text-xs text-gray-400 mt-1">Aktualizowane co godzinę</div>
+                </div>
+                <div class="text-center bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent mb-2">
+                        <span class="counter" data-target="30">0</span>%
+                    </div>
+                    <div class="text-gray-600 font-medium">Średnie Oszczędności</div>
+                    <div class="text-xs text-gray-400 mt-1">Miesięcznie na zakupach</div>
+                </div>
+                <div class="text-center bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent mb-2">
+                        <span class="counter" data-target="25">0</span>
+                    </div>
+                    <div class="text-gray-600 font-medium">Sklepów Partner</div>
+                    <div class="text-xs text-gray-400 mt-1">W całej Polsce</div>
+                </div>
+                <div class="text-center bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent mb-2">
+                        <span class="counter" data-target="100000">0</span>+
+                    </div>
+                    <div class="text-gray-600 font-medium">Aktywnych Użytkowników</div>
+                    <div class="text-xs text-gray-400 mt-1">I ciągle rośnie!</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Smart Price Comparison -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium mb-4">
+                    <i data-lucide="brain" class="w-4 h-4 mr-2"></i>
+                    AI-Powered Comparison
+                </div>
+                <h3 class="text-4xl font-bold text-gray-900 mb-4">Inteligentne Porównanie Cen</h3>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Nasza AI analizuje ceny w czasie rzeczywistym i przewiduje najlepsze momenty na zakupy
+                </p>
+            </div>
+
+            <div class="grid gap-8" id="productGrid">
+                <!-- Premium Product Card 1 -->
+                <div class="bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-xl card-premium border border-white/50">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200&h=200&fit=crop" 
+                                 alt="Mleko" class="w-48 h-48 object-cover rounded-2xl mx-auto">
+                            <div class="absolute -top-2 -right-2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                Najlepsza Cena!
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h4 class="text-2xl font-bold text-gray-900 mb-2">Mleko UHT 3.2% 1L</h4>
+                                    <p class="text-gray-600 mb-2">Łaciate, świeże mleko UHT</p>
+                                    <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                                        <span>4.8 (2,341 opinii)</span>
+                                        <span>•</span>
+                                        <span>Dostępne w 3 sklepach</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-500 mb-1">Trend cen ↓ 5%</div>
+                                    <div class="flex items-center">
+                                        <i data-lucide="trending-down" class="w-4 h-4 text-green-500 mr-1"></i>
+                                        <span class="text-green-600 font-medium">Spada</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="store-lidl text-white p-5 rounded-2xl price-highlight relative overflow-hidden">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="font-semibold text-lg">LIDL</span>
+                                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Najniższa</span>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">3.49 PLN</div>
+                                    <div class="text-sm opacity-90">Oszczędność: 0.70 PLN</div>
+                                </div>
+                                
+                                <div class="store-biedronka text-white p-5 rounded-2xl price-highlight">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="font-semibold text-lg">Biedronka</span>
+                                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">+0.50 PLN</span>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">3.99 PLN</div>
+                                    <div class="text-sm opacity-90">Promocja do 15.12</div>
+                                </div>
+                                
+                                <div class="store-auchan text-white p-5 rounded-2xl price-highlight">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="font-semibold text-lg">Auchan</span>
+                                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">+0.70 PLN</span>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">4.19 PLN</div>
+                                    <div class="text-sm opacity-90">Dostępne online</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div class="savings-pulse bg-green-100 text-green-800 px-4 py-2 rounded-xl font-semibold">
+                                    💰 Maksymalna oszczędność: 0.70 PLN (17%)
+                                </div>
+                                <div class="flex space-x-3">
+                                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg">
+                                        <i data-lucide="plus" class="w-4 h-4 mr-2 inline"></i>
+                                        Dodaj do Listy
+                                    </button>
+                                    <button class="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all">
+                                        <i data-lucide="bell" class="w-4 h-4 mr-2 inline"></i>
+                                        Alarm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 gradient-primary"></div>
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center text-white">
+            <div class="floating-animation">
+                <h3 class="text-5xl font-bold mb-6">Gotowy na Inteligentne Zakupy?</h3>
+                <p class="text-xl mb-10 text-blue-100 max-w-3xl mx-auto">
+                    Dołącz do tysięcy Polaków, którzy już oszczędzają dzięki SmartShop AI
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center mb-8">
+                    <button class="bg-white text-blue-600 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-2xl">
+                        <i data-lucide="rocket" class="w-5 h-5 mr-2 inline"></i>
+                        Rozpocznij za Darmo
+                    </button>
+                    <button class="border-2 border-white text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-white hover:text-blue-600 transition-all">
+                        <i data-lucide="play-circle" class="w-5 h-5 mr-2 inline"></i>
+                        Zobacz Demo
+                    </button>
+                </div>
+                
+                <div class="flex items-center justify-center space-x-8 text-blue-200">
+                    <div class="flex items-center">
+                        <i data-lucide="check" class="w-4 h-4 mr-1"></i>
+                        Bez zobowiązań
+                    </div>
+                    <div class="flex items-center">
+                        <i data-lucide="check" class="w-4 h-4 mr-1"></i>
+                        30 dni za darmo
+                    </div>
+                    <div class="flex items-center">
+                        <i data-lucide="check" class="w-4 h-4 mr-1"></i>
+                        Anuluj w każdej chwili
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Loading screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 500);
+            }, 1500);
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Counter animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.floor(current).toLocaleString();
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target.toLocaleString();
+                    }
+                };
+                updateCounter();
+            });
+        }
+        
+        // Enhanced search functionality
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value;
+            if (searchTerm) {
+                // Show loading state
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mr-2 inline animate-spin"></i>Szukam...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    alert(`🔍 AI przeszukuje bazę produktów: "${searchTerm}"\n\n✨ Znaleziono 127 produktów\n💰 Średnia oszczędność: 23%\n🚀 Funkcja zostanie aktywowana w pełnej wersji!`);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    lucide.createIcons();
+                }, 2000);
+            }
+        }
+        
+        // Enhanced interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate counters when in view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        observer.disconnect();
+                    }
+                });
+            });
+            
+            const statsSection = document.querySelector('.counter');
+            if (statsSection) observer.observe(statsSection);
+            
+            // Enhanced button interactions
+            document.querySelectorAll('button').forEach(button => {
+                if (button.innerText.includes('Dodaj do Listy')) {
+                    button.addEventListener('click', function() {
+                        const originalContent = this.innerHTML;
+                        this.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-2 inline"></i>Dodano!';
+                        this.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                        this.classList.add('bg-green-500');
+                        
+                        // Re-initialize icons
+                        lucide.createIcons();
+                        
+                        setTimeout(() => {
+                            this.innerHTML = originalContent;
+                            this.classList.remove('bg-green-500');
+                            this.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                            lucide.createIcons();
+                        }, 3000);
+                    });
+                }
+            });
+        });
+        
+        // Enter key for search
+        document.getElementById('productSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,67 @@
+{
+  "name": "smartshop-ai",
+  "version": "1.0.0",
+  "description": "Intelligent Price Comparison & Shopping Optimization Platform for Polish Market",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "ai-engine"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:ai\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:ai": "cd ai-engine && python main.py",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend && npm run test:ai",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "test:ai": "cd ai-engine && pytest",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up --build",
+    "setup": "npm install && npm run setup:frontend && npm run setup:backend && npm run setup:ai",
+    "setup:frontend": "cd frontend && npm install",
+    "setup:backend": "cd backend && npm install",
+    "setup:ai": "cd ai-engine && pip install -r requirements.txt",
+    "db:migrate": "cd backend && npx prisma migrate dev",
+    "db:seed": "cd backend && npm run seed",
+    "start": "npm run start:frontend & npm run start:backend & npm run start:ai",
+    "start:frontend": "cd frontend && npm start",
+    "start:backend": "cd backend && npm start",
+    "start:ai": "cd ai-engine && gunicorn main:app"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "price-comparison",
+    "grocery",
+    "ai",
+    "optimization",
+    "poland",
+    "shopping",
+    "smart",
+    "budget"
+  ],
+  "author": "SmartShop AI Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smartshop-ai/smartshop-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smartshop-ai/smartshop-ai/issues"
+  },
+  "homepage": "https://smartshop-ai.com"
+} 

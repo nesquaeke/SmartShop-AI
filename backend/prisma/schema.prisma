@@ -1,0 +1,490 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  firstName String?
+  lastName  String?
+  avatar    String?
+  phone     String?
+  
+  // Authentication
+  emailVerified Boolean @default(false)
+  emailToken    String?
+  resetToken    String?
+  resetTokenExpiry DateTime?
+  
+  // User Preferences
+  location     String?
+  language     String @default("pl")
+  currency     String @default("PLN")
+  timezone     String @default("Europe/Warsaw")
+  
+  // Notification Preferences
+  emailNotifications Boolean @default(true)
+  pushNotifications  Boolean @default(true)
+  smsNotifications   Boolean @default(false)
+  
+  // Premium Features
+  isPremium      Boolean   @default(false)
+  premiumExpiry  DateTime?
+  subscriptionId String?
+  
+  // Relationships
+  accounts         Account[]
+  sessions         Session[]
+  shoppingLists    ShoppingList[]
+  priceAlerts      PriceAlert[]
+  reviews          Review[]
+  favoriteProducts FavoriteProduct[]
+  analytics        UserAnalytics[]
+  notifications    Notification[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+// OAuth Accounts
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// User Sessions
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Stores and Retailers
+model Store {
+  id          String @id @default(cuid())
+  name        String @unique
+  slug        String @unique
+  logo        String?
+  website     String?
+  description String?
+  
+  // Store Configuration
+  isActive    Boolean @default(true)
+  apiEndpoint String?
+  scrapingConfig Json?
+  
+  // Store Metadata
+  country     String @default("PL")
+  storeType   StoreType
+  
+  // Relationships
+  products    Product[]
+  prices      Price[]
+  locations   StoreLocation[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("stores")
+}
+
+enum StoreType {
+  SUPERMARKET
+  HYPERMARKET
+  DISCOUNT
+  ONLINE
+  PHARMACY
+  SPECIALTY
+}
+
+// Store Locations
+model StoreLocation {
+  id        String @id @default(cuid())
+  storeId   String
+  
+  // Location Details
+  name      String
+  address   String
+  city      String
+  zipCode   String
+  country   String @default("PL")
+  
+  // Coordinates
+  latitude  Float?
+  longitude Float?
+  
+  // Operating Hours
+  hours     Json?
+  
+  // Metadata
+  isActive  Boolean @default(true)
+  
+  // Relationships
+  store     Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("store_locations")
+}
+
+// Product Catalog
+model Product {
+  id          String @id @default(cuid())
+  name        String
+  slug        String @unique
+  description String?
+  image       String?
+  imageAlt    String?
+  
+  // Product Details
+  brand       String?
+  category    String
+  subcategory String?
+  barcode     String? @unique
+  sku         String?
+  
+  // Product Attributes
+  weight      Float?
+  volume      Float?
+  unit        String?
+  
+  // SEO and Metadata
+  metaTitle       String?
+  metaDescription String?
+  tags            String[]
+  
+  // Status
+  isActive    Boolean @default(true)
+  isTracked   Boolean @default(true)
+  
+  // Relationships
+  prices          Price[]
+  reviews         Review[]
+  favoriteProducts FavoriteProduct[]
+  listItems       ShoppingListItem[]
+  priceAlerts     PriceAlert[]
+  store           Store @relation(fields: [storeId], references: [id])
+  storeId         String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("products")
+}
+
+// Price History and Tracking
+model Price {
+  id        String @id @default(cuid())
+  productId String
+  storeId   String
+  
+  // Price Information
+  currentPrice    Float
+  originalPrice   Float?
+  discountAmount  Float?
+  discountPercent Float?
+  
+  // Price Metadata
+  currency       String @default("PLN")
+  isOnSale       Boolean @default(false)
+  saleStartDate  DateTime?
+  saleEndDate    DateTime?
+  
+  // Availability
+  inStock        Boolean @default(true)
+  stockQuantity  Int?
+  
+  // Data Source
+  sourceUrl      String?
+  scrapedAt      DateTime @default(now())
+  isManual       Boolean @default(false)
+  
+  // Relationships
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  store   Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([productId, storeId])
+  @@map("prices")
+}
+
+// Shopping Lists
+model ShoppingList {
+  id          String @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  
+  // List Configuration
+  isPublic    Boolean @default(false)
+  isArchived  Boolean @default(false)
+  totalBudget Float?
+  
+  // Smart Features
+  isOptimized Boolean @default(false)
+  optimizedAt DateTime?
+  
+  // Relationships
+  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items ShoppingListItem[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("shopping_lists")
+}
+
+// Shopping List Items
+model ShoppingListItem {
+  id             String @id @default(cuid())
+  shoppingListId String
+  productId      String
+  
+  // Item Details
+  quantity       Int    @default(1)
+  priority       Priority @default(MEDIUM)
+  notes          String?
+  
+  // Status
+  isPurchased    Boolean @default(false)
+  purchasedAt    DateTime?
+  purchasePrice  Float?
+  purchaseStore  String?
+  
+  // Relationships
+  shoppingList ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([shoppingListId, productId])
+  @@map("shopping_list_items")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// Price Alerts
+model PriceAlert {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+  
+  // Alert Configuration
+  targetPrice     Float
+  alertType       AlertType @default(PRICE_DROP)
+  isActive        Boolean   @default(true)
+  
+  // Notification Preferences
+  emailAlert      Boolean @default(true)
+  pushAlert       Boolean @default(true)
+  smsAlert        Boolean @default(false)
+  
+  // Alert History
+  lastTriggered   DateTime?
+  triggerCount    Int @default(0)
+  
+  // Relationships
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, productId])
+  @@map("price_alerts")
+}
+
+enum AlertType {
+  PRICE_DROP
+  BACK_IN_STOCK
+  SALE_START
+  PRICE_TARGET
+}
+
+// Product Reviews
+model Review {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+  
+  // Review Content
+  rating    Int    // 1-5 stars
+  title     String?
+  content   String?
+  
+  // Review Metadata
+  isVerified Boolean @default(false)
+  isHelpful  Int     @default(0)
+  
+  // Relationships
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+// Favorite Products
+model FavoriteProduct {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+  
+  // Relationships
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, productId])
+  @@map("favorite_products")
+}
+
+// User Analytics
+model UserAnalytics {
+  id     String @id @default(cuid())
+  userId String
+  
+  // Analytics Data
+  totalSavings      Float   @default(0)
+  monthlySpending   Float   @default(0)
+  favoriteStore     String?
+  favoriteCategory  String?
+  
+  // Usage Statistics
+  listsCreated      Int @default(0)
+  productsTracked   Int @default(0)
+  alertsSet         Int @default(0)
+  
+  // Time Period
+  month Int
+  year  Int
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, month, year])
+  @@map("user_analytics")
+}
+
+// Notifications
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+  
+  // Notification Content
+  title   String
+  message String
+  type    NotificationType
+  
+  // Notification Data
+  data    Json?
+  
+  // Status
+  isRead  Boolean @default(false)
+  readAt  DateTime?
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@map("notifications")
+}
+
+enum NotificationType {
+  PRICE_ALERT
+  SALE_NOTIFICATION
+  LIST_REMINDER
+  SYSTEM_UPDATE
+  PROMOTION
+}
+
+// System Configuration
+model AppConfig {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("app_config")
+}
+
+// Scraping Jobs
+model ScrapingJob {
+  id       String @id @default(cuid())
+  storeId  String
+  
+  // Job Details
+  status      JobStatus @default(PENDING)
+  startedAt   DateTime?
+  completedAt DateTime?
+  
+  // Results
+  productsScraped Int @default(0)
+  pricesUpdated   Int @default(0)
+  errors          Json?
+  
+  // Configuration
+  jobType         String
+  configuration   Json?
+  
+  createdAt DateTime @default(now())
+  
+  @@map("scraping_jobs")
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+} 

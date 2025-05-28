@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartShop AI - Inteligentne Porównanie Cen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .store-lidl { background: linear-gradient(135deg, #0050aa, #003d82); }
+        .store-biedronka { background: linear-gradient(135deg, #e31e24, #b01419); }
+        .store-auchan { background: linear-gradient(135deg, #ff6900, #e55100); }
+        .savings-badge { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                        <i data-lucide="shopping-cart" class="text-white w-6 h-6"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900">SmartShop AI</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-4">Strona Główna</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-900 pb-4">Produkty</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-900 pb-4">Listy Zakupów</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-900 pb-4">Alarmy Cenowe</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-900 pb-4">Analityka</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">
+                        Zaloguj się
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-5xl font-bold mb-6">
+                Oszczędzaj na Zakupach z <span class="text-yellow-300">AI</span>
+            </h2>
+            <p class="text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
+                Porównuj ceny w LIDL, Biedronce i Auchan. Optymalizuj swoje zakupy i oszczędzaj do 30% miesięcznie!
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                <input 
+                    type="text" 
+                    placeholder="Wyszukaj produkty (np. mleko, chleb)"
+                    class="px-6 py-3 rounded-lg text-gray-900 flex-1 focus:ring-4 focus:ring-blue-300 outline-none"
+                    id="productSearch"
+                >
+                <button class="bg-yellow-400 text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-300" onclick="searchProducts()">
+                    Szukaj
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-blue-600">50,000+</div>
+                    <div class="text-gray-600">Produktów</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-green-600">30%</div>
+                    <div class="text-gray-600">Średnie Oszczędności</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-purple-600">15</div>
+                    <div class="text-gray-600">Sklepów</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-red-600">100k+</div>
+                    <div class="text-gray-600">Użytkowników</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Price Comparison Demo -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-900 mb-4">Porównanie Cen na Żywo</h3>
+                <p class="text-gray-600 text-lg">Zobacz aktualne ceny produktów w różnych sklepach</p>
+            </div>
+
+            <div class="grid gap-8" id="productGrid">
+                <!-- Product 1 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=150&h=150&fit=crop" 
+                             alt="Mleko" class="w-32 h-32 object-cover rounded-lg mx-auto md:mx-0">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">Mleko UHT 3.2% 1L</h4>
+                            <p class="text-gray-600 mb-4">Łaciate, świeże mleko UHT</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- LIDL -->
+                                <div class="store-lidl text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">LIDL</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">Najniższa</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">3.49 PLN</div>
+                                </div>
+                                
+                                <!-- Biedronka -->
+                                <div class="store-biedronka text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Biedronka</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">+0.50 PLN</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">3.99 PLN</div>
+                                </div>
+                                
+                                <!-- Auchan -->
+                                <div class="store-auchan text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Auchan</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">+0.70 PLN</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">4.19 PLN</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="text-green-600 font-semibold savings-badge">
+                                    💰 Oszczędność: 0.70 PLN (17%)
+                                </div>
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                    Dodaj do Listy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=150&h=150&fit=crop" 
+                             alt="Chleb" class="w-32 h-32 object-cover rounded-lg mx-auto md:mx-0">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">Chleb Żytni 500g</h4>
+                            <p class="text-gray-600 mb-4">Tradycyjny chleb żytni</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Biedronka -->
+                                <div class="store-biedronka text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Biedronka</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">Najniższa</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">2.89 PLN</div>
+                                </div>
+                                
+                                <!-- LIDL -->
+                                <div class="store-lidl text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">LIDL</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">+0.30 PLN</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">3.19 PLN</div>
+                                </div>
+                                
+                                <!-- Auchan -->
+                                <div class="store-auchan text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Auchan</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">+0.60 PLN</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">3.49 PLN</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="text-green-600 font-semibold savings-badge">
+                                    💰 Oszczędność: 0.60 PLN (21%)
+                                </div>
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                    Dodaj do Listy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <img src="https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=150&h=150&fit=crop" 
+                             alt="Masło" class="w-32 h-32 object-cover rounded-lg mx-auto md:mx-0">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">Masło Extra 200g</h4>
+                            <p class="text-gray-600 mb-4">Wysokiej jakości masło</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Auchan -->
+                                <div class="store-auchan text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Auchan</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">Najniższa</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">4.99 PLN</div>
+                                </div>
+                                
+                                <!-- LIDL -->
+                                <div class="store-lidl text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">LIDL</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">+0.50 PLN</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">5.49 PLN</div>
+                                </div>
+                                
+                                <!-- Biedronka -->
+                                <div class="store-biedronka text-white p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium">Biedronka</span>
+                                        <span class="text-sm bg-white/20 px-2 py-1 rounded">+1.00 PLN</span>
+                                    </div>
+                                    <div class="text-2xl font-bold">5.99 PLN</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="text-green-600 font-semibold savings-badge">
+                                    💰 Oszczędność: 1.00 PLN (20%)
+                                </div>
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                    Dodaj do Listy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shopping List Demo -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Lista Zakupów -->
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Twoja Lista Zakupów</h3>
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="space-y-4" id="shoppingList">
+                            <div class="flex items-center justify-between bg-white p-4 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-5 h-5 text-blue-600">
+                                    <span>Mleko UHT 3.2% 1L</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold">3.49 PLN</div>
+                                    <div class="text-sm text-gray-500">LIDL</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between bg-white p-4 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-5 h-5 text-blue-600">
+                                    <span>Chleb Żytni 500g</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold">2.89 PLN</div>
+                                    <div class="text-sm text-gray-500">Biedronka</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between bg-white p-4 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-5 h-5 text-blue-600">
+                                    <span>Masło Extra 200g</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold">4.99 PLN</div>
+                                    <div class="text-sm text-gray-500">Auchan</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="flex justify-between items-center text-lg font-semibold">
+                                <span>Razem:</span>
+                                <span>11.37 PLN</span>
+                            </div>
+                            <div class="text-sm text-green-600 mt-1">
+                                Oszczędność: 2.30 PLN (20%)
+                            </div>
+                        </div>
+                        
+                        <button class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
+                            🚀 Optymalizuj Trasę Zakupów
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- AI Suggestions -->
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Rekomendacje AI</h3>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="lightbulb" class="text-white w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-blue-900">Sugerujemy dodać:</h4>
+                                    <p class="text-blue-700 mt-1">Jajka - promocja w LIDL -25%</p>
+                                    <button class="text-blue-600 text-sm font-medium mt-2 hover:underline">
+                                        Dodaj do listy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="map-pin" class="text-white w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-green-900">Optymalna trasa:</h4>
+                                    <p class="text-green-700 mt-1">1. LIDL → 2. Biedronka → 3. Auchan</p>
+                                    <p class="text-sm text-green-600 mt-1">Czas: 25 min, Oszczędność: 2.30 PLN</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="trending-down" class="text-white w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-purple-900">Prognoza cen:</h4>
+                                    <p class="text-purple-700 mt-1">Cena masła może wzrosnąć o 10% w przyszłym tygodniu</p>
+                                    <button class="text-purple-600 text-sm font-medium mt-2 hover:underline">
+                                        Kup teraz
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-900 mb-4">Dlaczego SmartShop AI?</h3>
+                <p class="text-gray-600 text-lg">Zaawansowane funkcje AI dla maksymalnych oszczędności</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="zap" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">Aktualizacje na Żywo</h4>
+                    <p class="text-gray-600">Ceny aktualizowane co godzinę z wszystkich sklepów</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="brain" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">AI Personalizacja</h4>
+                    <p class="text-gray-600">Rekomendacje dostosowane do Twoich preferencji</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="bell" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">Alarmy Cenowe</h4>
+                    <p class="text-gray-600">Powiadomienia o promocjach i obniżkach cen</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="map" class="text-red-600 w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">Optymalizacja Tras</h4>
+                    <p class="text-gray-600">Najkrótsza trasa dla maksymalnych oszczędności</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="bar-chart" class="text-yellow-600 w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">Analityka Wydatków</h4>
+                    <p class="text-gray-600">Szczegółowe raporty Twoich oszczędności</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="users" class="text-indigo-600 w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">Społeczność</h4>
+                    <p class="text-gray-600">Dziel się listami i radami z innymi użytkownikami</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-bg text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-4xl font-bold mb-6">Zacznij Oszczędzać Już Dziś!</h3>
+            <p class="text-xl mb-8 text-blue-100">
+                Dołącz do 100,000+ Polaków, którzy oszczędzają pieniądze dzięki SmartShop AI
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100">
+                    Zacznij za Darmo
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-600">
+                    Zobacz Demo
+                </button>
+            </div>
+            <p class="text-sm text-blue-200 mt-4">
+                Bez zobowiązań • Anuluj w każdej chwili • Pierwsze 30 dni za darmo
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+                            <i data-lucide="shopping-cart" class="text-white w-5 h-5"></i>
+                        </div>
+                        <span class="font-bold text-xl">SmartShop AI</span>
+                    </div>
+                    <p class="text-gray-400">
+                        Inteligentne porównanie cen dla mądrzejszych zakupów.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Produkty</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Porównywarka Cen</a></li>
+                        <li><a href="#" class="hover:text-white">Listy Zakupów</a></li>
+                        <li><a href="#" class="hover:text-white">Alarmy Cenowe</a></li>
+                        <li><a href="#" class="hover:text-white">Analityka</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Sklepy</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">LIDL</a></li>
+                        <li><a href="#" class="hover:text-white">Biedronka</a></li>
+                        <li><a href="#" class="hover:text-white">Auchan</a></li>
+                        <li><a href="#" class="hover:text-white">Ceneo</a></li>
+                        <li><a href="#" class="hover:text-white">Allegro</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Firma</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">O nas</a></li>
+                        <li><a href="#" class="hover:text-white">Kontakt</a></li>
+                        <li><a href="#" class="hover:text-white">Prywatność</a></li>
+                        <li><a href="#" class="hover:text-white">Regulamin</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 SmartShop AI. Wszystkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Simple search functionality
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value;
+            if (searchTerm) {
+                alert(`🔍 Szukam produktów: "${searchTerm}"\n\nTa funkcja zostanie aktywowana w pełnej wersji aplikacji!`);
+            }
+        }
+        
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate real-time price updates
+            setInterval(function() {
+                const badges = document.querySelectorAll('.savings-badge');
+                badges.forEach(badge => {
+                    badge.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        badge.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            }, 5000);
+            
+            // Add click handlers for buttons
+            document.querySelectorAll('button').forEach(button => {
+                if (button.innerText.includes('Dodaj do Listy')) {
+                    button.addEventListener('click', function() {
+                        this.innerText = '✅ Dodano!';
+                        this.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        this.classList.add('bg-green-600');
+                        setTimeout(() => {
+                            this.innerText = 'Dodaj do Listy';
+                            this.classList.remove('bg-green-600');
+                            this.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        }, 2000);
+                    });
+                }
+            });
+        });
+        
+        // Enter key for search
+        document.getElementById('productSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+    </script>
+</body>
+</html> 

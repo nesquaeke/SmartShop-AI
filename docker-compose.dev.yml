@@ -1,0 +1,153 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartshop_postgres
+    environment:
+      POSTGRES_DB: smartshop_ai
+      POSTGRES_USER: smartshop
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - smartshop_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: smartshop_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - smartshop_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: smartshop_backend
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://smartshop:password@postgres:5432/smartshop_ai
+      - REDIS_URL=redis://redis:6379
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - smartshop_network
+    restart: unless-stopped
+
+  # AI/ML Engine
+  ai-engine:
+    build:
+      context: ./ai-engine
+      dockerfile: Dockerfile.dev
+    container_name: smartshop_ai
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://smartshop:password@postgres:5432/smartshop_ai
+      - REDIS_URL=redis://redis:6379
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai-engine:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - smartshop_network
+    restart: unless-stopped
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: smartshop_frontend
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_AI_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+      - ai-engine
+    networks:
+      - smartshop_network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy (for production-like environment)
+  nginx:
+    image: nginx:alpine
+    container_name: smartshop_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+      - ai-engine
+    networks:
+      - smartshop_network
+    restart: unless-stopped
+
+  # Monitoring & Logging
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: smartshop_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - smartshop_network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: smartshop_grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - smartshop_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  smartshop_network:
+    driver: bridge 
