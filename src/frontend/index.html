@@ -9,9 +9,64 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        /* Base Styles */
+        :root {
+            --bg-primary: theme('colors.gray.50');
+            --bg-secondary: rgba(255, 255, 255, 0.7);
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --text-primary: theme('colors.gray.900');
+            --text-secondary: theme('colors.gray.600');
+            --text-muted: theme('colors.gray.500');
+            --border-color: theme('colors.gray.200');
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --dropdown-bg: white;
+            --dropdown-hover: theme('colors.gray.100');
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: theme('colors.gray.900');
+            --bg-secondary: rgba(17, 24, 39, 0.8);
+            --bg-card: rgba(31, 41, 55, 0.8);
+            --text-primary: theme('colors.gray.100');
+            --text-secondary: theme('colors.gray.300');
+            --text-muted: theme('colors.gray.400');
+            --border-color: theme('colors.gray.700');
+            --header-bg: rgba(17, 24, 39, 0.8);
+            --dropdown-bg: theme('colors.gray.800');
+            --dropdown-hover: theme('colors.gray.700');
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Theme-aware background */
+        .theme-bg-primary {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+
+        .theme-bg-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+
+        .theme-text-primary { color: var(--text-primary); }
+        .theme-text-secondary { color: var(--text-secondary); }
+        .theme-text-muted { color: var(--text-muted); }
+
+        /* Dark mode specific gradients */
+        [data-theme="dark"] .gradient-bg {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 50%, #d1d5db 100%);
+        }
+
         .gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .gradient-secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        
         .card-premium { 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(10px);
@@ -20,9 +75,15 @@
             transform: translateY(-8px) scale(1.02); 
             box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.15);
         }
+
+        [data-theme="dark"] .card-premium:hover {
+            box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.4);
+        }
+
         .store-lidl { background: linear-gradient(135deg, #0050aa, #003d82); }
         .store-biedronka { background: linear-gradient(135deg, #e31e24, #b01419); }
         .store-auchan { background: linear-gradient(135deg, #ff6900, #e55100); }
+        
         .floating-animation {
             animation: float 6s ease-in-out infinite;
         }
@@ -30,8 +91,9 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
+        
         .loading-spinner {
-            border: 3px solid #f3f3f3;
+            border: 3px solid var(--border-color);
             border-top: 3px solid #667eea;
             border-radius: 50%;
             width: 24px;
@@ -42,6 +104,7 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
         .notification { 
             transform: translateX(100%); 
             transition: transform 0.3s ease-in-out; 
@@ -49,6 +112,7 @@
         .notification.show { 
             transform: translateX(0); 
         }
+        
         .language-selector {
             position: relative;
         }
@@ -56,8 +120,8 @@
             position: absolute;
             top: 100%;
             right: 0;
-            background: white;
-            border: 1px solid #e5e7eb;
+            background: var(--dropdown-bg);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             z-index: 50;
@@ -74,9 +138,10 @@
             gap: 8px;
             cursor: pointer;
             transition: background-color 0.2s;
+            color: var(--text-primary);
         }
         .language-option:hover {
-            background-color: #f3f4f6;
+            background-color: var(--dropdown-hover);
         }
         .language-option:first-child {
             border-radius: 12px 12px 0 0;
@@ -84,14 +149,62 @@
         .language-option:last-child {
             border-radius: 0 0 12px 12px;
         }
+
+        /* Dark Mode Toggle Button */
+        .theme-toggle {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: #4f46e5;
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            transform: translateX(26px);
+        }
+
+        /* Input and form controls dark mode */
+        [data-theme="dark"] input[type="text"],
+        [data-theme="dark"] input[type="number"],
+        [data-theme="dark"] select {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] input[type="text"]:focus,
+        [data-theme="dark"] input[type="number"]:focus,
+        [data-theme="dark"] select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 min-h-screen">
+<body class="gradient-bg theme-text-primary min-h-screen">
     <!-- Notification Container -->
     <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-white/20">
+    <header class="theme-bg-card backdrop-blur-lg sticky top-0 z-40 border-b border-white/20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-4">
@@ -102,21 +215,28 @@
                         <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             SmartShop AI
                         </h1>
-                        <p class="text-xs text-gray-500" data-text="subtitle">Full Application</p>
+                        <p class="text-xs theme-text-muted" data-text="subtitle">Full Application</p>
                     </div>
                 </div>
                 
                 <nav class="hidden lg:flex space-x-1">
                     <button onclick="showSection('home')" class="px-4 py-2 rounded-xl bg-blue-500 text-white font-medium" data-text="nav.dashboard">Dashboard</button>
-                    <button onclick="showSection('products')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50" data-text="nav.products">Produkty</button>
-                    <button onclick="showSection('shopping-list')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50" data-text="nav.shopping_list">Lista Zakupów</button>
-                    <button onclick="showSection('analytics')" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-white/50" data-text="nav.analytics">Analityka</button>
+                    <button onclick="showSection('products')" class="px-4 py-2 rounded-xl theme-text-secondary hover:bg-white/50" data-text="nav.products">Produkty</button>
+                    <button onclick="showSection('shopping-list')" class="px-4 py-2 rounded-xl theme-text-secondary hover:bg-white/50" data-text="nav.shopping_list">Lista Zakupów</button>
+                    <button onclick="showSection('analytics')" class="px-4 py-2 rounded-xl theme-text-secondary hover:bg-white/50" data-text="nav.analytics">Analityka</button>
                 </nav>
                 
                 <div class="flex items-center space-x-3">
+                    <!-- Dark Mode Toggle -->
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="sun" class="w-4 h-4 theme-text-muted"></i>
+                        <div class="theme-toggle" onclick="toggleTheme()" title="Karanlık/Aydınlık Mod"></div>
+                        <i data-lucide="moon" class="w-4 h-4 theme-text-muted"></i>
+                    </div>
+                    
                     <!-- Language Selector -->
                     <div class="language-selector">
-                        <button id="languageBtn" onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 p-2 rounded-xl text-gray-600 hover:bg-white/50 transition-all">
+                        <button id="languageBtn" onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 p-2 rounded-xl theme-text-secondary hover:bg-white/50 transition-all">
                             <span id="currentFlag">🇵🇱</span>
                             <span id="currentLang" class="text-sm font-medium">PL</span>
                             <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -133,10 +253,10 @@
                         </div>
                     </div>
                     
-                    <button id="refreshDataBtn" onclick="refreshAllData()" class="p-2 rounded-xl text-gray-600 hover:bg-white/50 transition-all">
+                    <button id="refreshDataBtn" onclick="refreshAllData()" class="p-2 rounded-xl theme-text-secondary hover:bg-white/50 transition-all">
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                     </button>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm theme-text-muted">
                         <span data-text="status">Status</span>: <span id="apiStatus" class="font-medium text-green-600" data-text="status.online">Online</span>
                     </div>
                 </div>
@@ -153,11 +273,11 @@
                 <div class="max-w-2xl mx-auto">
                     <div class="flex gap-4">
                         <div class="flex-1 relative">
-                            <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                            <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 theme-text-muted w-5 h-5"></i>
                             <input 
                                 type="text" 
                                 data-placeholder="search.placeholder"
-                                class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none"
+                                class="w-full pl-12 pr-4 py-3 theme-bg-card rounded-xl border-2 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none theme-text-primary"
                                 id="globalSearch"
                             >
                         </div>
@@ -173,54 +293,54 @@
 
             <!-- Stats Dashboard -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                             <i data-lucide="package" class="text-blue-600 w-6 h-6"></i>
                         </div>
                         <span id="productsCount" class="text-2xl font-bold text-blue-600">0</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900" data-text="stats.products">Produkty</h3>
-                    <p class="text-sm text-gray-500" data-text="stats.products_desc">W bazie danych</p>
+                    <h3 class="font-semibold theme-text-primary" data-text="stats.products">Produkty</h3>
+                    <p class="text-sm theme-text-muted" data-text="stats.products_desc">W bazie danych</p>
                 </div>
                 
-                <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                             <i data-lucide="trending-down" class="text-green-600 w-6 h-6"></i>
                         </div>
                         <span id="savingsAmount" class="text-2xl font-bold text-green-600">0 PLN</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900" data-text="stats.savings">Oszczędności</h3>
-                    <p class="text-sm text-gray-500" data-text="stats.savings_desc">Miesięczne</p>
+                    <h3 class="font-semibold theme-text-primary" data-text="stats.savings">Oszczędności</h3>
+                    <p class="text-sm theme-text-muted" data-text="stats.savings_desc">Miesięczne</p>
                 </div>
                 
-                <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                             <i data-lucide="store" class="text-purple-600 w-6 h-6"></i>
                         </div>
                         <span class="text-2xl font-bold text-purple-600">3</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900" data-text="stats.stores">Sklepy</h3>
-                    <p class="text-sm text-gray-500" data-text="stats.stores_desc">Aktywne</p>
+                    <h3 class="font-semibold theme-text-primary" data-text="stats.stores">Sklepy</h3>
+                    <p class="text-sm theme-text-muted" data-text="stats.stores_desc">Aktywne</p>
                 </div>
                 
-                <div class="bg-white/70 backdrop-blur-lg rounded-2xl p-6 card-premium">
+                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 card-premium">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
                             <i data-lucide="bell" class="text-red-600 w-6 h-6"></i>
                         </div>
                         <span id="alertsCount" class="text-2xl font-bold text-red-600">0</span>
                     </div>
-                    <h3 class="font-semibold text-gray-900" data-text="stats.alerts">Alarmy</h3>
-                    <p class="text-sm text-gray-500" data-text="stats.alerts_desc">Aktywne</p>
+                    <h3 class="font-semibold theme-text-primary" data-text="stats.alerts">Alarmy</h3>
+                    <p class="text-sm theme-text-muted" data-text="stats.alerts_desc">Aktywne</p>
                 </div>
             </div>
 
             <!-- AI Recommendations -->
-            <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6 mb-8">
-                <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6 mb-8">
+                <h3 class="text-xl font-bold theme-text-primary mb-4 flex items-center">
                     <i data-lucide="brain" class="w-6 h-6 mr-2 text-purple-600"></i>
                     <span data-text="ai.recommendations">AI Rekomendacje</span>
                 </h3>
@@ -230,8 +350,8 @@
             </div>
 
             <!-- Recent Products -->
-            <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="recent.products">Najnowsze Produkty</h3>
+            <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6">
+                <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="recent.products">Najnowsze Produkty</h3>
                 <div id="recentProducts" class="grid gap-4">
                     <!-- Recent products will be loaded here -->
                 </div>
@@ -241,12 +361,12 @@
         <!-- Products Section -->
         <div id="products-section" class="section hidden">
             <div class="mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4" data-text="products.catalog">Katalog Produktów</h2>
+                <h2 class="text-3xl font-bold theme-text-primary mb-4" data-text="products.catalog">Katalog Produktów</h2>
                 <div class="flex gap-4 mb-4">
-                    <select id="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                    <select id="categoryFilter" class="px-4 py-2 theme-bg-card rounded-lg theme-text-primary">
                         <option value="all" data-text="products.all_categories">Wszystkie kategorie</option>
                     </select>
-                    <select id="sortFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                    <select id="sortFilter" class="px-4 py-2 theme-bg-card rounded-lg theme-text-primary">
                         <option value="name" data-text="products.sort_name">Sortuj po nazwie</option>
                         <option value="price" data-text="products.sort_price">Sortuj po cenie</option>
                         <option value="savings" data-text="products.sort_savings">Sortuj po oszczędnościach</option>
@@ -261,8 +381,8 @@
         <!-- Shopping List Section -->
         <div id="shopping-list-section" class="section hidden">
             <div class="grid lg:grid-cols-2 gap-8">
-                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="shopping.title">Twoja Lista Zakupów</h3>
+                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6">
+                    <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="shopping.title">Twoja Lista Zakupów</h3>
                     <div id="shoppingListContainer">
                         <!-- Shopping list will be loaded here -->
                     </div>
@@ -271,8 +391,8 @@
                     </button>
                 </div>
                 
-                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4" data-text="shopping.optimized_route">Optymalna Trasa</h3>
+                <div class="theme-bg-card backdrop-blur-lg rounded-2xl p-6">
+                    <h3 class="text-xl font-bold theme-text-primary mb-4" data-text="shopping.optimized_route">Optymalna Trasa</h3>
                     <div id="optimizedRoute">
                         <!-- Optimized route will be shown here -->
                     </div>
@@ -319,6 +439,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
             initializeLanguage(); // Initialize language system first
+            initializeTheme();
             initializeApp();
         });
 
@@ -916,6 +1037,39 @@
                 searchProducts();
             }
         });
+
+        // ============= THEME SYSTEM =============
+        
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('smartshop_theme') || 'light';
+            applyTheme(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+            
+            // Show notification
+            const message = newTheme === 'dark' 
+                ? '🌙 Karanlık mod aktif' 
+                : '☀️ Aydınlık mod aktif';
+            showNotification(message, 'success');
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('smartshop_theme', theme);
+            
+            // Update theme toggle appearance
+            const toggle = document.querySelector('.theme-toggle');
+            if (toggle) {
+                toggle.style.background = theme === 'dark' ? '#4f46e5' : '#e5e7eb';
+            }
+        }
+
+        // ============= END THEME SYSTEM =============
 
         // ============= MULTILINGUAL SYSTEM =============
         
