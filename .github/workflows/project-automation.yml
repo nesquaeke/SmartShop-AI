@@ -1,0 +1,74 @@
+name: 🚀 SmartShop AI Project Automation
+
+on:
+  issues:
+    types: [opened, closed, reopened]
+  pull_request:
+    types: [opened, closed, merged]
+  push:
+    branches: [main, develop]
+
+jobs:
+  project-automation:
+    runs-on: ubuntu-latest
+    name: 📋 Auto-organize Issues & PRs
+    
+    steps:
+      - name: 📥 Add to project
+        uses: actions/add-to-project@v0.4.0
+        with:
+          project-url: https://github.com/users/nesquaeke/projects/1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 🏷️ Auto-label issues
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = issue.body.toLowerCase();
+            
+            let labels = [];
+            
+            // Auto-label based on title/content
+            if (title.includes('bug') || title.includes('hata')) {
+              labels.push('bug');
+            }
+            if (title.includes('feature') || title.includes('özellik')) {
+              labels.push('feature');
+            }
+            if (body.includes('frontend') || body.includes('ui')) {
+              labels.push('frontend');
+            }
+            if (body.includes('backend') || body.includes('api')) {
+              labels.push('backend');
+            }
+            if (body.includes('ai') || body.includes('machine learning')) {
+              labels.push('ai');
+            }
+            if (body.includes('scraping') || body.includes('scraper')) {
+              labels.push('scraping');
+            }
+            
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labels
+              });
+            }
+
+  deployment-notification:
+    runs-on: ubuntu-latest
+    name: 🚀 Deployment Notification
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: 📢 Notify deployment
+        run: |
+          echo "🚀 SmartShop AI deployed to production!"
+          echo "📊 Backend: Running on port 3001"
+          echo "🤖 AI Engine: Running on port 8000"
+          echo "🌐 Frontend: Available on port 3000" 
