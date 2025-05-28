@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
-async function scrapeLidlProducts() {
-  console.log('🔥 GERÇEK LIDL ÜRÜN FİYATLARI ÇEKİLİYOR!');
+async function getLidlRealProducts() {
+  console.log('🛒 LIDL GERÇEK ÜRÜN ÇEKİMİ BAŞLIYOR...');
   
   let browser;
   try {
@@ -10,189 +10,137 @@ async function scrapeLidlProducts() {
       args: [
         '--no-sandbox', 
         '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu'
+        '--disable-dev-shm-usage'
       ]
     });
     
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-    
-    console.log('📍 LIDL Gıda kategorisine gidiliyor...');
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
     
     // Direkt gıda kategorisine git
+    console.log('📍 LIDL Gıda kategorisine gidiliyor...');
     await page.goto('https://www.lidl.pl/c/zywnosc-i-napoje/s10068374', { 
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'networkidle2',
       timeout: 15000 
     });
     
-    console.log('✅ Gıda kategorisi yüklendi!');
+    console.log('✅ Gıda sayfası yüklendi!');
     
-    // Çerezleri kabul et
-    try {
-      await page.waitForSelector('#onetrust-accept-btn-handler', { timeout: 3000 });
-      await page.click('#onetrust-accept-btn-handler');
-      console.log('🍪 Çerezler kabul edildi');
-      await page.waitForTimeout(2000);
-    } catch (e) {
-      console.log('🍪 Çerez butonu bulunamadı, devam ediliyor...');
-    }
-    
-    // Ürünleri ara
-    console.log('🔍 Ürünler aranıyor...');
-    
-    // Farklı selector'ları dene
-    const productData = await page.evaluate(() => {
-      // Muhtemel ürün container'ları
-      const selectors = [
-        '.product',
-        '.product-item',
+    // Sayfada mevcut elementleri kontrol et
+    const pageInfo = await page.evaluate(() => {
+      const title = document.title;
+      const h1 = document.querySelector('h1')?.textContent || 'H1 bulunamadı';
+      
+      // Ürün kartları aramak için farklı seçiciler dene
+      const possibleSelectors = [
+        '.product-grid-box',
         '.product-card',
+        '.product-item', 
+        '.product',
         '.item',
-        '.article',
+        '.tile',
         '[data-product]',
-        '.grid-item',
+        '.offer',
         '.product-tile',
-        '.offer-tile',
-        '.product-box'
+        '.grid-item'
       ];
       
-      let allProducts = [];
-      
-      // Her selector için ürün ara
-      selectors.forEach(selector => {
+      let foundElements = [];
+      possibleSelectors.forEach(selector => {
         const elements = document.querySelectorAll(selector);
-        console.log(`Selector ${selector}: ${elements.length} element bulundu`);
-        
-        elements.forEach((element, index) => {
-          try {
-            // Ürün adı ara
-            const nameSelectors = [
-              '.product-title', '.title', '.name', '.product-name',
-              'h1', 'h2', 'h3', 'h4', '.heading', '[data-testid*="title"]'
-            ];
-            
-            let productName = '';
-            for (let nameSelector of nameSelectors) {
-              const nameEl = element.querySelector(nameSelector);
-              if (nameEl && nameEl.textContent.trim()) {
-                productName = nameEl.textContent.trim();
-                break;
-              }
-            }
-            
-            // Fiyat ara
-            const priceSelectors = [
-              '.price', '.cost', '.amount', '.price-current', '.price-value',
-              '[data-testid*="price"]', '.currency', '.money'
-            ];
-            
-            let price = '';
-            for (let priceSelector of priceSelectors) {
-              const priceEl = element.querySelector(priceSelector);
-              if (priceEl && priceEl.textContent.trim()) {
-                price = priceEl.textContent.trim();
-                break;
-              }
-            }
-            
-            // Resim ara
-            const imgEl = element.querySelector('img');
-            const imageUrl = imgEl ? imgEl.src || imgEl.getAttribute('data-src') : '';
-            
-            if (productName || price) {
-              allProducts.push({
-                name: productName || 'Ürün adı bulunamadı',
-                price: price || 'Fiyat bulunamadı',
-                image: imageUrl,
-                selector: selector,
-                index: index
-              });
-            }
-          } catch (error) {
-            console.log('Ürün parse hatası:', error.message);
-          }
-        });
-      });
-      
-      // Genel page text'inden ürün isimlerini de ara
-      const pageText = document.body.textContent || '';
-      const polishProducts = [
-        'mleko', 'chleb', 'masło', 'jajka', 'ser', 'jogurt',
-        'ryż', 'makaron', 'olej', 'cukier', 'mąka', 'herbata',
-        'kawa', 'sok', 'woda', 'mięso', 'kurczak', 'wołowina'
-      ];
-      
-      const foundProducts = polishProducts.filter(product => 
-        pageText.toLowerCase().includes(product)
-      );
-      
-      return {
-        scrapedProducts: allProducts,
-        detectedProductWords: foundProducts,
-        totalElementsChecked: selectors.reduce((sum, sel) => {
-          return sum + document.querySelectorAll(sel).length;
-        }, 0),
-        pageTitle: document.title,
-        pageUrl: window.location.href
-      };
-    });
-    
-    console.log(`🎯 Toplam kontrol edilen element: ${productData.totalElementsChecked}`);
-    console.log(`📦 Bulunan ürün: ${productData.scrapedProducts.length}`);
-    console.log(`🇵🇱 Tespit edilen Lehçe ürün kelimeleri: ${productData.detectedProductWords.join(', ')}`);
-    
-    // Bulunan ürünleri listele
-    if (productData.scrapedProducts.length > 0) {
-      console.log('\n🛒 BULUNAN GERÇEK ÜRÜNLER:');
-      productData.scrapedProducts.slice(0, 10).forEach((product, i) => {
-        console.log(`${i+1}. ${product.name}`);
-        console.log(`   💰 Fiyat: ${product.price}`);
-        console.log(`   🔍 Selector: ${product.selector}`);
-        if (product.image) console.log(`   🖼️ Resim: ${product.image.substring(0, 50)}...`);
-        console.log('');
-      });
-    }
-    
-    // Alternatif: Sayfa HTML'sinden direct price pattern'larını ara
-    const pricePatterns = await page.evaluate(() => {
-      const text = document.body.innerHTML;
-      const patterns = [
-        /(\d+[,\.]\d{2})\s*zł/gi,
-        /zł\s*(\d+[,\.]\d{2})/gi,
-        /(\d+)\s*zł/gi,
-        /price[^>]*>([^<]*\d[^<]*)</gi
-      ];
-      
-      let foundPrices = [];
-      patterns.forEach(pattern => {
-        const matches = text.match(pattern);
-        if (matches) {
-          foundPrices = foundPrices.concat(matches.slice(0, 5));
+        if (elements.length > 0) {
+          foundElements.push({
+            selector: selector,
+            count: elements.length,
+            sample: elements[0]?.outerHTML?.substring(0, 200) + '...'
+          });
         }
       });
       
-      return foundPrices;
+      // Genel div'lerde ürün benzeri yapıları ara
+      const allDivs = document.querySelectorAll('div');
+      let productLikeDivs = 0;
+      
+      allDivs.forEach(div => {
+        const text = div.textContent?.toLowerCase() || '';
+        if ((text.includes('zł') || text.includes('pln')) && 
+            (text.includes('kg') || text.includes('szt') || text.includes('ml'))) {
+          productLikeDivs++;
+        }
+      });
+      
+      return {
+        title,
+        h1,
+        foundElements,
+        productLikeDivs,
+        totalDivs: allDivs.length
+      };
     });
     
-    console.log('\n💰 BULUNAN FİYAT PATTERN\'LARI:');
-    pricePatterns.slice(0, 10).forEach((price, i) => {
-      console.log(`${i+1}. ${price}`);
+    console.log('📊 Sayfa bilgileri:');
+    console.log('Title:', pageInfo.title);
+    console.log('H1:', pageInfo.h1);
+    console.log('Toplam div:', pageInfo.totalDivs);
+    console.log('Ürün benzeri divler:', pageInfo.productLikeDivs);
+    
+    console.log('\n🔍 Bulunan element tipleri:');
+    pageInfo.foundElements.forEach(element => {
+      console.log(`${element.selector}: ${element.count} adet`);
+    });
+    
+    // En umut verici seçiciyi kullan
+    const bestSelector = pageInfo.foundElements.length > 0 ? 
+      pageInfo.foundElements[0].selector : 'div';
+    
+    console.log(`\n🎯 En iyi seçici: ${bestSelector}`);
+    
+    // Ürünleri çek
+    const products = await page.evaluate((selector) => {
+      const elements = document.querySelectorAll(selector);
+      const products = [];
+      
+      elements.forEach((element, index) => {
+        try {
+          const text = element.textContent || '';
+          
+          // Fiyat ara (zł, PLN, decimal numbers)
+          const priceMatch = text.match(/(\d+[,\.]\d{2})\s*(zł|PLN)/i);
+          
+          // Ürün adı ara (büyük harf ile başlayan kelimeler)
+          const nameMatch = text.match(/([A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż\s\d]+)/);
+          
+          if (priceMatch && nameMatch) {
+            const price = parseFloat(priceMatch[1].replace(',', '.'));
+            const name = nameMatch[1].trim().substring(0, 50);
+            
+            if (price > 0 && price < 1000 && name.length > 3) {
+              products.push({
+                name: name,
+                price: price,
+                fullText: text.substring(0, 100),
+                index: index
+              });
+            }
+          }
+        } catch (e) {
+          // Hata varsa bu elementi atla
+        }
+      });
+      
+      return products.slice(0, 10); // İlk 10 ürün
+    }, bestSelector);
+    
+    console.log('\n🎯 Bulunan ürünler:');
+    products.forEach((product, i) => {
+      console.log(`${i+1}. ${product.name} - ${product.price} zł`);
     });
     
     return {
       success: true,
-      timestamp: new Date().toISOString(),
-      url: productData.pageUrl,
-      title: productData.pageTitle,
-      productsFound: productData.scrapedProducts.length,
-      pricesFound: pricePatterns.length,
-      sampleProducts: productData.scrapedProducts.slice(0, 5),
-      samplePrices: pricePatterns.slice(0, 5),
-      detectedWords: productData.detectedProductWords
+      products: products,
+      count: products.length,
+      timestamp: new Date().toISOString()
     };
     
   } catch (error) {
@@ -200,6 +148,7 @@ async function scrapeLidlProducts() {
     return { 
       success: false, 
       error: error.message,
+      products: [],
       timestamp: new Date().toISOString()
     };
   } finally {
@@ -209,18 +158,21 @@ async function scrapeLidlProducts() {
   }
 }
 
-// GERÇEK VERİ ÇEKİMİNİ BAŞLAT
-console.log('🚀🚀🚀 GERÇEK ZAMANLI LIDL FİYAT VERİSİ ÇEKİLİYOR! 🚀🚀🚀');
-scrapeLidlProducts()
+// Test çalıştır
+getLidlRealProducts()
   .then(result => {
-    console.log('\n🎯 FİNAL SONUÇ:');
-    console.log(JSON.stringify(result, null, 2));
+    console.log('\n🎯 SONUÇ:');
+    console.log(`Başarı: ${result.success}`);
+    console.log(`Ürün sayısı: ${result.count}`);
     
-    if (result.success) {
-      console.log('\n✅ BAŞARILI! GERÇEK LIDL VERİLERİ ÇEKİLDİ!');
-      console.log(`📊 ${result.productsFound} ürün, ${result.pricesFound} fiyat bulundu!`);
+    if (result.success && result.products.length > 0) {
+      console.log('\n🎉 BAŞARILI! Gerçek LIDL ürünleri bulundu!');
+      console.log('İlk 5 ürün:');
+      result.products.slice(0, 5).forEach((p, i) => {
+        console.log(`${i+1}. ${p.name} - ${p.price} zł`);
+      });
     } else {
-      console.log('\n❌ BAŞARISIZ!', result.error);
+      console.log('\n⚠️ Ürün bulunamadı veya hata oluştu.');
     }
   })
   .catch(error => {
