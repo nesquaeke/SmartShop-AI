@@ -1,12 +1,8 @@
 {
   "name": "smartshop-ai",
-  "version": "1.0.0",
-  "description": "SmartShop AI - Full Stack Price Comparison Platform",
-  "private": true,
-  "workspaces": [
-    "src/frontend",
-    "src/backend"
-  ],
+  "version": "2.0.0",
+  "description": "🛒 Inteligentny asystent zakupowy z AI dla polskich sklepów - znajdź najlepsze oferty i oszczędzaj pieniądze!",
+  "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:ai\"",
     "dev:frontend": "cd src/frontend && npm run dev",
@@ -15,46 +11,57 @@
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd src/frontend && npm run build",
     "build:backend": "cd src/backend && npm run build",
-    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
-    "start:frontend": "cd src/frontend && npm run serve",
+    "start": "npm run start:backend",
+    "start:frontend": "cd src/frontend && npm run start",
     "start:backend": "cd src/backend && npm run start",
     "install:all": "npm install && cd src/frontend && npm install && cd ../backend && npm install",
-    "clean": "rm -rf node_modules src/*/node_modules src/*/dist",
+    "clean": "rm -rf node_modules src/frontend/node_modules src/backend/node_modules src/backend/dist",
     "lint": "cd src/backend && npm run lint",
-    "test": "cd src/backend && npm run test",
-    "docker:build": "cd src/backend && npm run docker:build",
-    "docker:run": "cd src/backend && npm run docker:run",
-    "prisma:generate": "cd src/backend && npm run prisma:generate",
-    "prisma:migrate": "cd src/backend && npm run prisma:migrate",
-    "prisma:studio": "cd src/backend && npm run prisma:studio"
+    "lint:fix": "cd src/backend && npm run lint:fix",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd src/frontend && npm run test",
+    "test:backend": "cd src/backend && npm run test",
+    "deploy": "npm run build && npm run deploy:frontend",
+    "deploy:frontend": "cd src/frontend && npm run deploy",
+    "health": "curl -f http://localhost:3001/health || echo 'Backend not running'",
+    "docs": "echo 'Opening documentation...' && open README.md"
   },
   "keywords": [
-    "smartshop",
+    "shopping",
     "ai",
     "price-comparison",
-    "e-commerce",
-    "shopping",
+    "polish-stores",
+    "biedronka",
+    "lidl",
+    "auchan",
+    "web-scraping",
     "optimization",
-    "fullstack",
-    "typescript",
-    "nodejs",
-    "express"
+    "smart-shopping"
   ],
-  "author": "SmartShop AI Team",
+  "author": {
+    "name": "SmartShop AI Team",
+    "email": "team@smartshop-ai.com",
+    "url": "https://github.com/nesquaeke/SmartShop-AI"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/SmartshopAi.git"
+    "url": "https://github.com/nesquaeke/SmartShop-AI.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/SmartshopAi/issues"
+    "url": "https://github.com/nesquaeke/SmartShop-AI/issues"
   },
-  "homepage": "https://github.com/your-username/SmartshopAi#readme",
+  "homepage": "https://nesquaeke.github.io/SmartShop-AI/",
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=7.0.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  }
+  },
+  "workspaces": [
+    "src/frontend",
+    "src/backend"
+  ],
+  "private": false
 }
