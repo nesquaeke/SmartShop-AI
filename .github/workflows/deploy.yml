@@ -18,14 +18,14 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd src/frontend
           npm install
+          cd src/frontend && npm install
+          cd ../backend && npm install
 
-      - name: Copy Frontend Files
+      - name: Build Frontend
         run: |
           mkdir -p dist
           cp -r src/frontend/* dist/
-          cp -r src/frontend/.* dist/ 2>/dev/null || true
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
