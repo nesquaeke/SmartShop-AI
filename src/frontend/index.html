@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Config dosyasını yükle -->
+    <script src="./js/config.js"></script>
+    
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-brand">
@@ -1813,287 +1816,49 @@
             console.log('Auto-save started');
         }
 
-        // API Functions
-        async function apiCall(endpoint, options = {}) {
-            try {
-                const response = await fetch(`${API_BASE}${endpoint}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...options.headers
-                    },
-                    ...options
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('API call failed:', endpoint, error);
-                // Return demo data as fallback
-                return getDemoData(endpoint);
-            }
-        }
-
-        // Demo data fallback
-        function getDemoData(endpoint) {
-            const demoData = {
-                '/products': {
-                    success: true,
-                    data: [
-                        {
-                            id: '1',
-                            name: 'Mleko UHT 3.2% 1L',
-                            description: 'Łaciate, świeże mleko UHT',
-                            category: 'Nabiał',
-                            brand: 'Łaciate',
-                            image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200&h=200&fit=crop',
-                            rating: 4.8,
-                            reviewCount: 2341,
-                            prices: [
-                                { store: 'LIDL', price: 3.49, isLowest: true, discount: 0.7 },
-                                { store: 'Biedronka', price: 3.99, isLowest: false, discount: 0.2 },
-                                { store: 'Auchan', price: 4.19, isLowest: false, discount: 0 }
-                            ]
-                        },
-                        {
-                            id: '2',
-                            name: 'Chleb Żytni 500g',
-                            description: 'Tradycyjny chleb żytni',
-                            category: 'Pieczywo',
-                            brand: 'Kaszubski',
-                            image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&h=200&fit=crop',
-                            rating: 4.6,
-                            reviewCount: 1289,
-                            prices: [
-                                { store: 'Biedronka', price: 2.89, isLowest: true, discount: 0.6 },
-                                { store: 'LIDL', price: 3.19, isLowest: false, discount: 0.3 },
-                                { store: 'Auchan', price: 3.49, isLowest: false, discount: 0 }
-                            ]
-                        }
-                    ]
-                },
-                '/ai/recommendations': {
-                    success: true,
-                    data: [
-                        {
-                            id: '1',
-                            type: 'product',
-                            title: 'Sugerujemy dodać:',
-                            message: 'Jajka - promocja w LIDL -25%',
-                            action: 'add_to_list',
-                            priority: 'high'
-                        }
-                    ]
-                },
-                '/shopping-list': {
-                    success: true,
-                    data: [
-                        {
-                            id: '1',
-                            name: 'Zakupy Tygodniowe',
-                            items: [],
-                            totalAmount: 0,
-                            estimatedSavings: 0
-                        }
-                    ]
-                },
-                '/prices/alerts': {
-                    success: true,
-                    data: []
-                }
-            };
-            
-            return demoData[endpoint] || { success: false, data: [] };
-        }
-
         // Data loading functions
         async function loadProducts() {
-            const response = await apiCall('/products');
-            if (response.success) {
-                products = response.data;
+            try {
+                const response = await window.API.get('/products');
+                products = response.data || response;
+                renderProducts();
+                updateProductsCount();
+            } catch (error) {
+                console.error('Failed to load products:', error);
+                // Fallback to demo data
+                products = getDemoProducts();
                 renderProducts();
                 updateProductsCount();
             }
         }
 
         async function loadShoppingList() {
-            const response = await apiCall('/shopping-list');
-            if (response.success && response.data.length > 0) {
-                shoppingList = response.data[0].items || [];
-                renderShoppingList();
-            }
-        }
-
-        async function loadAIRecommendations() {
-            const response = await apiCall('/ai/recommendations', {
-                method: 'POST',
-                body: JSON.stringify({ userId: 'demo', currentList: shoppingList })
-            });
-            if (response.success) {
-                recommendations = response.data;
-                renderAIRecommendations();
-            }
-        }
-
-        async function loadPriceAlerts() {
-            const response = await apiCall('/prices/alerts');
-            if (response.success) {
-                renderPriceAlerts(response.data);
-                updateAlertsCount(response.data.length);
-            }
-        }
-
-        async function checkAPIStatus() {
             try {
-                await apiCall('/health');
-                document.getElementById('apiStatus').textContent = 'Online';
-                document.getElementById('apiStatus').className = 'font-medium text-green-500';
+                const response = await window.API.get('/shopping-list');
+                if (response.data && response.data.length > 0) {
+                    shoppingList = response.data[0].items || [];
+                    renderShoppingList();
+                }
             } catch (error) {
-                document.getElementById('apiStatus').textContent = 'Demo Mode';
-                document.getElementById('apiStatus').className = 'font-medium text-yellow-600';
+                console.error('Failed to load shopping list:', error);
+                // Continue with empty list
             }
         }
 
-        // Rendering functions
-        function renderProducts() {
-            const grid = document.getElementById('productsGrid');
-            const recentGrid = document.getElementById('recentProducts');
-            
-            const productHTML = products.map(product => `
-                <div class="product-card rounded-xl p-6 shadow-lg card-premium">
-                    <div class="flex gap-4">
-                        <img src="${product.image}" alt="${product.name}" class="product-image w-24 h-24 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h4 class="font-semibold theme-text-primary mb-2">${product.name}</h4>
-                            <p class="theme-text-secondary text-sm mb-2">${product.description}</p>
-                            <div class="flex items-center mb-3">
-                                <span class="text-yellow-500 mr-1">⭐</span>
-                                <span class="text-sm theme-text-muted">${product.rating} (${product.reviewCount} değerlendirme)</span>
-                            </div>
-                            <div class="flex gap-2 mb-3">
-                                ${product.prices.map(price => `
-                                    <span class="px-2 py-1 rounded text-xs font-medium ${getStoreClass(price.store)}">
-                                        ${price.store}: ${price.price} TL
-                                        ${price.isLowest ? '🏆' : ''}
-                                    </span>
-                                `).join('')}
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-green-500 font-semibold">
-                                    💰 Tasarruf: ${Math.max(...product.prices.map(p => p.discount))} TL
-                                </span>
-                                <button onclick="addToShoppingList('${product.id}')" 
-                                        class="btn-primary px-4 py-2 rounded-lg transition-all">
-                                    Dodaj do Listy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            if (grid) grid.innerHTML = productHTML;
-            if (recentGrid) recentGrid.innerHTML = productHTML;
-        }
-
-        function renderAIRecommendations() {
-            const container = document.getElementById('aiRecommendations');
-            if (!container) return;
-            
-            const html = recommendations.map(rec => `
-                <div class="card-premium border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                    <div class="flex items-start space-x-3">
-                        <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center">
-                            <i data-lucide="lightbulb" class="text-white w-4 h-4"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold theme-text-primary">${rec.title}</h4>
-                            <p class="theme-text-secondary mt-1">${rec.message}</p>
-                            ${rec.action ? `
-                                <button onclick="handleRecommendationAction('${rec.action}', '${rec.productId || ''}')" 
-                                        class="theme-text-accent text-sm font-medium mt-2 hover:underline">
-                                    Akcja
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            container.innerHTML = html;
-            lucide.createIcons();
-        }
-
-        function renderShoppingList() {
-            const container = document.getElementById('shoppingListContainer');
-            if (!container) return;
-            
-            if (shoppingList.length === 0) {
-                container.innerHTML = '<p class="theme-text-muted text-center py-8">Alışveriş listesi boş</p>';
-                return;
+        async function loadRecommendations() {
+            try {
+                const response = await window.API.post('/recommendations', {
+                    preferences: getUserPreferences(),
+                    location: 'Warsaw, Poland'
+                });
+                recommendations = response.data || response;
+                renderRecommendations();
+            } catch (error) {
+                console.error('Failed to load recommendations:', error);
+                // Fallback to demo recommendations
+                recommendations = getDemoRecommendations();
+                renderRecommendations();
             }
-            
-            const html = shoppingList.map(item => `
-                <div class="flex items-center justify-between card-premium p-4 rounded-lg mb-2">
-                    <div class="flex items-center space-x-3">
-                        <input type="checkbox" class="w-5 h-5 text-blue-600">
-                        <span class="theme-text-primary">${item.name}</span>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-semibold theme-text-primary">${item.price} TL</div>
-                        <div class="text-sm theme-text-muted">${item.selectedStore}</div>
-                    </div>
-                </div>
-            `).join('');
-            
-            container.innerHTML = html;
-        }
-
-        function renderPriceAlerts(alerts) {
-            const container = document.getElementById('priceAlerts');
-            if (!container) return;
-            
-            if (alerts.length === 0) {
-                container.innerHTML = '<p class="theme-text-muted text-center py-8">Aktif fiyat uyarısı yok</p>';
-                return;
-            }
-            
-            const html = alerts.map(alert => `
-                <div class="flex items-center justify-between p-4 card-premium rounded-lg mb-2">
-                    <div>
-                        <h4 class="font-semibold theme-text-primary">${alert.productName}</h4>
-                        <p class="text-sm theme-text-secondary">Hedef: ${alert.targetPrice} TL</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-semibold theme-text-primary">${alert.currentPrice} TL</div>
-                        <div class="text-sm ${alert.status === 'triggered' ? 'text-green-500' : 'text-yellow-500'}">
-                            ${alert.status === 'triggered' ? 'Ulaşıldı!' : 'Aktif'}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            container.innerHTML = html;
-        }
-
-        // Helper functions
-        function getStoreClass(store) {
-            const classes = {
-                'LIDL': 'bg-blue-100 text-blue-800',
-                'BİM': 'bg-red-100 text-red-800',
-                'Migros': 'bg-orange-100 text-orange-800',
-                'Şok': 'bg-purple-100 text-purple-800',
-                'A101': 'bg-green-100 text-green-800'
-            };
-            return classes[store] || 'bg-gray-100 text-gray-800';
-        }
-
-        function updateDashboard() {
-            updateProductsCount();
-            updateSavingsAmount();
-            updateAlertsCount(0);
         }
 
         function updateProductsCount() {
@@ -3856,39 +3621,21 @@
                         'skincare': {
                             title: '✨ Skincare',
                             products: [
-                                { name: 'Face Cream 50ml', price: '19.99 PLN', store: 'LIDL', image: '🧴', discount: '25%' },
-                                { name: 'Sunscreen SPF50', price: '14.99 PLN', store: 'BİM', image: '🧴', discount: '20%' },
-                                { name: 'Face Mask Set', price: '12.99 PLN', store: 'Migros', image: '🧴', discount: '30%' }
-                            ]
-                        },
-                        'bath': {
-                            title: '🛁 Bath & Body Care',
-                            products: [
-                                { name: 'Body Wash 400ml', price: '8.99 PLN', store: 'LIDL', image: '🧴', discount: '20%' },
-                                { name: 'Body Lotion', price: '12.99 PLN', store: 'BİM', image: '🧴', discount: '25%' },
-                                { name: 'Bath Bombs Set', price: '16.99 PLN', store: 'Migros', image: '🛁', discount: '15%' }
+                                { name: 'Face Cream 50ml', price: '19.99 PLN', store: 'Rossmann', image: '🧴', discount: '25%' },
+                                { name: 'Sunscreen SPF50', price: '14.99 PLN', store: 'DM', image: '🧴', discount: '20%' }
                             ]
                         }
                     }
                 },
                 'pets': {
-                    title: '🐶 Pets',
+                    title: '🐾 Pets',
                     icon: 'lucide-heart',
                     subcategories: {
                         'dog-food': {
                             title: '🐕 Dog Food',
                             products: [
-                                { name: 'Dry Dog Food 5kg', price: '49.99 PLN', store: 'LIDL', image: '🐕', discount: '20%' },
-                                { name: 'Wet Dog Food 12pk', price: '24.99 PLN', store: 'BİM', image: '🥫', discount: '25%' },
-                                { name: 'Dog Treats', price: '8.99 PLN', store: 'Migros', image: '🦴', discount: '15%' }
-                            ]
-                        },
-                        'cat-food': {
-                            title: '🐱 Cat Food',
-                            products: [
-                                { name: 'Dry Cat Food 3kg', price: '39.99 PLN', store: 'LIDL', image: '🐱', discount: '30%' },
-                                { name: 'Wet Cat Food 12pk', price: '19.99 PLN', store: 'BİM', image: '🥫', discount: '20%' },
-                                { name: 'Cat Litter 10L', price: '14.99 PLN', store: 'Migros', image: '🪣', discount: '25%' }
+                                { name: 'Dry Dog Food 15kg', price: '89.99 PLN', store: 'Kakadu', image: '🐕', discount: '15%' },
+                                { name: 'Wet Dog Food 12x400g', price: '49.99 PLN', store: 'MAXI ZOO', image: '🐕', discount: '20%' }
                             ]
                         }
                     }
@@ -3900,17 +3647,8 @@
                         'tires': {
                             title: '🛞 Tires',
                             products: [
-                                { name: 'Summer Tires 205/55R16', price: '299.99 PLN', store: 'AutoParts', image: '🛞', discount: '15%' },
-                                { name: 'Winter Tires 195/65R15', price: '349.99 PLN', store: 'TireShop', image: '🛞', discount: '20%' },
-                                { name: 'All Season Tires', price: '279.99 PLN', store: 'AutoParts', image: '🛞', discount: '10%' }
-                            ]
-                        },
-                        'accessories': {
-                            title: '🔧 Car Accessories',
-                            products: [
-                                { name: 'Car Phone Holder', price: '19.99 PLN', store: 'LIDL', image: '📱', discount: '25%' },
-                                { name: 'Car Charger', price: '12.99 PLN', store: 'BİM', image: '🔌', discount: '20%' },
-                                { name: 'Air Freshener', price: '4.99 PLN', store: 'Migros', image: '🌸', discount: '30%' }
+                                { name: 'Summer Tires 205/55R16', price: '299.99 PLN', store: 'Castorama', image: '🛞', discount: '15%' },
+                                { name: 'Winter Tires 195/65R15', price: '349.99 PLN', store: 'Leroy Merlin', image: '🛞', discount: '20%' }
                             ]
                         }
                     }
@@ -3919,20 +3657,11 @@
                     title: '🚴 Sports & Outdoors',
                     icon: 'lucide-dumbbell',
                     subcategories: {
-                        'fitness': {
-                            title: '💪 Fitness',
+                        'bikes': {
+                            title: '🚲 Bikes',
                             products: [
-                                { name: 'Yoga Mat', price: '29.99 PLN', store: 'SportShop', image: '🧘', discount: '25%' },
-                                { name: 'Dumbbells 5kg', price: '49.99 PLN', store: 'FitnessStore', image: '🏋️', discount: '20%' },
-                                { name: 'Resistance Bands', price: '19.99 PLN', store: 'SportShop', image: '🏃', discount: '30%' }
-                            ]
-                        },
-                        'outdoor': {
-                            title: '🏕️ Outdoor',
-                            products: [
-                                { name: 'Camping Tent 2p', price: '149.99 PLN', store: 'OutdoorGear', image: '⛺', discount: '15%' },
-                                { name: 'Sleeping Bag', price: '79.99 PLN', store: 'CampingStore', image: '🛌', discount: '20%' },
-                                { name: 'Hiking Backpack', price: '99.99 PLN', store: 'OutdoorGear', image: '🎒', discount: '25%' }
+                                { name: 'Mountain Bike', price: '999.99 PLN', store: 'Decathlon', image: '🚲', discount: '10%' },
+                                { name: 'City Bike', price: '799.99 PLN', store: '4F', image: '🚲', discount: '15%' }
                             ]
                         }
                     }
@@ -3944,17 +3673,8 @@
                         'books': {
                             title: '📚 Books',
                             products: [
-                                { name: 'Best Seller Novel', price: '24.99 PLN', store: 'BookStore', image: '📖', discount: '20%' },
-                                { name: 'Cookbook', price: '19.99 PLN', store: 'LIDL', image: '👨‍🍳', discount: '25%' },
-                                { name: 'Self-Help Book', price: '29.99 PLN', store: 'BookStore', image: '📚', discount: '15%' }
-                            ]
-                        },
-                        'games': {
-                            title: '🎮 Video Games',
-                            products: [
-                                { name: 'PlayStation Game', price: '199.99 PLN', store: 'GameStore', image: '🎮', discount: '30%' },
-                                { name: 'Nintendo Switch Game', price: '149.99 PLN', store: 'GameStore', image: '🎮', discount: '25%' },
-                                { name: 'PC Game', price: '99.99 PLN', store: 'DigitalStore', image: '💻', discount: '40%' }
+                                { name: 'Best Seller Novel', price: '24.99 PLN', store: 'Empik', image: '📖', discount: '20%' },
+                                { name: 'Cookbook', price: '19.99 PLN', store: 'taniaksiazka.pl', image: '👨‍🍳', discount: '25%' }
                             ]
                         }
                     }
