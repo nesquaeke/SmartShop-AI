@@ -387,6 +387,112 @@
             });
         }
         
+        // Ürünleri getir ve görüntüle
+        async function fetchAndDisplayProducts() {
+            try {
+                const response = await fetch('http://localhost:3001/api/products');
+                const products = await response.json();
+                
+                const productGrid = document.getElementById('productGrid');
+                productGrid.innerHTML = ''; // Mevcut içeriği temizle
+                
+                products.forEach(product => {
+                    const productCard = createProductCard(product);
+                    productGrid.appendChild(productCard);
+                });
+                
+                // Lucide ikonlarını yeniden başlat
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Ürünler yüklenirken hata oluştu:', error);
+                alert('Ürünler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+            }
+        }
+
+        // Ürün kartı oluştur
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-xl card-premium border border-white/50';
+            
+            card.innerHTML = `
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="relative">
+                        <img src="${product.image || 'https://via.placeholder.com/200'}" 
+                             alt="${product.name}" class="w-48 h-48 object-cover rounded-2xl mx-auto">
+                        ${product.isBestPrice ? `
+                            <div class="absolute -top-2 -right-2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                Najlepsza Cena!
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h4 class="text-2xl font-bold text-gray-900 mb-2">${product.name}</h4>
+                                <p class="text-gray-600 mb-2">${product.description || ''}</p>
+                                <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                    <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                                    <span>${product.rating || '4.5'} (${product.reviewCount || '100'} opinii)</span>
+                                    <span>•</span>
+                                    <span>Dostępne w ${product.storeCount || '3'} sklepach</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500 mb-1">Trend cen ${product.priceTrend || '↓ 5%'}</div>
+                                <div class="flex items-center">
+                                    <i data-lucide="${product.priceTrendIcon || 'trending-down'}" class="w-4 h-4 text-green-500 mr-1"></i>
+                                    <span class="text-green-600 font-medium">${product.priceTrendText || 'Spada'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            ${product.prices.map(price => `
+                                <div class="store-${price.store.toLowerCase()} text-white p-5 rounded-2xl price-highlight relative overflow-hidden">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="font-semibold text-lg">${price.store}</span>
+                                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">${price.isLowest ? 'Najniższa' : `+${price.difference} PLN`}</span>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">${price.price} PLN</div>
+                                    <div class="text-sm opacity-90">${price.savings ? `Oszczędność: ${price.savings} PLN` : price.promotion || 'Dostępne online'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="savings-pulse bg-green-100 text-green-800 px-4 py-2 rounded-xl font-semibold">
+                                💰 Maksymalna oszczędność: ${product.maxSavings} PLN (${product.savingsPercentage}%)
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg" onclick="addToShoppingList('${product.id}')">
+                                    <i data-lucide="plus" class="w-4 h-4 mr-2 inline"></i>
+                                    Dodaj do Listy
+                                </button>
+                                <button class="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all" onclick="setPriceAlert('${product.id}')">
+                                    <i data-lucide="bell" class="w-4 h-4 mr-2 inline"></i>
+                                    Alarm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Alışveriş listesine ekle
+        function addToShoppingList(productId) {
+            // TODO: Implement shopping list functionality
+            alert('Bu özellik yakında eklenecek!');
+        }
+
+        // Fiyat alarmı kur
+        function setPriceAlert(productId) {
+            // TODO: Implement price alert functionality
+            alert('Bu özellik yakında eklenecek!');
+        }
+        
         // Enhanced search functionality
         function searchProducts() {
             const searchTerm = document.getElementById('productSearch').value;
@@ -397,12 +503,40 @@
                 button.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mr-2 inline animate-spin"></i>Szukam...';
                 button.disabled = true;
                 
-                setTimeout(() => {
-                    alert(`🔍 AI przeszukuje bazę produktów: "${searchTerm}"\n\n✨ Znaleziono 127 produktów\n💰 Średnia oszczędność: 23%\n🚀 Funkcja zostanie aktywowana w pełnej wersji!`);
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                    lucide.createIcons();
-                }, 2000);
+                // Arama yap
+                fetch(`http://localhost:3001/api/products/search?q=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(products => {
+                        const productGrid = document.getElementById('productGrid');
+                        productGrid.innerHTML = ''; // Mevcut içeriği temizle
+                        
+                        if (products.length === 0) {
+                            productGrid.innerHTML = `
+                                <div class="text-center py-12">
+                                    <i data-lucide="search-x" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Ürün Bulunamadı</h3>
+                                    <p class="text-gray-600">Aramanızla eşleşen ürün bulunamadı. Lütfen farklı bir arama terimi deneyin.</p>
+                                </div>
+                            `;
+                        } else {
+                            products.forEach(product => {
+                                const productCard = createProductCard(product);
+                                productGrid.appendChild(productCard);
+                            });
+                        }
+                        
+                        // Lucide ikonlarını yeniden başlat
+                        lucide.createIcons();
+                    })
+                    .catch(error => {
+                        console.error('Arama sırasında hata oluştu:', error);
+                        alert('Arama sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                    })
+                    .finally(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        lucide.createIcons();
+                    });
             }
         }
         
@@ -421,27 +555,8 @@
             const statsSection = document.querySelector('.counter');
             if (statsSection) observer.observe(statsSection);
             
-            // Enhanced button interactions
-            document.querySelectorAll('button').forEach(button => {
-                if (button.innerText.includes('Dodaj do Listy')) {
-                    button.addEventListener('click', function() {
-                        const originalContent = this.innerHTML;
-                        this.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-2 inline"></i>Dodano!';
-                        this.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-                        this.classList.add('bg-green-500');
-                        
-                        // Re-initialize icons
-                        lucide.createIcons();
-                        
-                        setTimeout(() => {
-                            this.innerHTML = originalContent;
-                            this.classList.remove('bg-green-500');
-                            this.classList.add('bg-blue-500', 'hover:bg-blue-600');
-                            lucide.createIcons();
-                        }, 3000);
-                    });
-                }
-            });
+            // Sayfa yüklendiğinde ürünleri getir
+            fetchAndDisplayProducts();
         });
         
         // Enter key for search
