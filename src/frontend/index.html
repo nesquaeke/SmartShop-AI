@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartShop AI - Your Shopping Assistant</title>
-    <link rel="stylesheet" href="./styles/main.css">
-    <link rel="stylesheet" href="./styles/dark-mode.css">
+    <script>
+        // Path detection for GitHub Pages vs localhost
+        const isGitHubPages = window.location.hostname === 'nesquaeke.github.io';
+        const basePath = isGitHubPages ? '/SmartShop-AI/' : './';
+        
+        // Dynamically load CSS
+        const cssFiles = ['styles/main.css', 'styles/dark-mode.css'];
+        cssFiles.forEach(file => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = basePath + file;
+            document.head.appendChild(link);
+        });
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Config dosyasını yükle -->
-    <script src="./js/config.js"></script>
+    <script>
+        // Config dosyasını dinamik olarak yükle
+        const configScript = document.createElement('script');
+        configScript.src = basePath + 'js/config.js';
+        document.head.appendChild(configScript);
+    </script>
     
     <!-- Navbar -->
     <nav class="navbar">

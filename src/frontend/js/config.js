@@ -15,6 +15,17 @@ const API_CONFIG = {
     }
 };
 
+// Path configuration for GitHub Pages vs localhost
+const PATH_CONFIG = {
+    BASE_PATH: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? '/' 
+        : '/SmartShop-AI/',
+    
+    getAssetPath(path) {
+        return this.BASE_PATH + path.replace(/^\//, '');
+    }
+};
+
 // API helper fonksiyonları
 window.API = {
     async get(endpoint, params = {}) {
@@ -50,4 +61,7 @@ window.API = {
         
         return response.json();
     }
-}; 
+};
+
+// Global PATH_CONFIG'i window'a ekle
+window.PATH_CONFIG = PATH_CONFIG; 

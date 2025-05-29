@@ -4,8 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartShop Pro - Advanced Features</title>
-    <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/dark-mode.css">
+    <script>
+        // Path detection for GitHub Pages vs localhost
+        const isGitHubPages = window.location.hostname === 'nesquaeke.github.io';
+        const basePath = isGitHubPages ? '/SmartShop-AI/' : '../';
+        
+        // Dynamically load CSS
+        const cssFiles = ['styles/main.css', 'styles/dark-mode.css'];
+        cssFiles.forEach(file => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = basePath + file;
+            document.head.appendChild(link);
+        });
+        
+        // Config dosyasını dinamik olarak yükle
+        const configScript = document.createElement('script');
+        configScript.src = basePath + 'js/config.js';
+        document.head.appendChild(configScript);
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -72,9 +89,6 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 min-h-screen">
-    <!-- Config dosyasını yükle -->
-    <script src="../js/config.js"></script>
-
     <!-- Loading Screen -->
     <div id="loadingScreen" class="fixed inset-0 z-50 gradient-primary flex items-center justify-center">
         <div class="text-center text-white">
