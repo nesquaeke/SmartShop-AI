@@ -16,10 +16,16 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install Dependencies
+        run: |
+          cd src/frontend
+          npm install
+
       - name: Copy Frontend Files
         run: |
           mkdir -p dist
           cp -r src/frontend/* dist/
+          cp -r src/frontend/.* dist/ 2>/dev/null || true
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
