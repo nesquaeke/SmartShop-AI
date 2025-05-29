@@ -1,8 +1,38 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartShop AI - Your Shopping Assistant</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dark-mode.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="assets/logo.png" alt="SmartShop AI Logo" class="nav-logo">
+            <span>SmartShop AI</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Strona główna</a>
+            <a href="pages/stores.html">Sklepy</a>
+            <a href="pages/products.html">Produkty</a>
+            <a href="pages/shopping-list.html">Lista zakupów</a>
+            <a href="pages/smartshop-pro.html">SmartShop Pro</a>
+        </div>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="theme-toggle">
+                🌙
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="hero">
+            <h1>Witaj w SmartShop AI</h1>
     <title>SmartShop AI - Full Application</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -3400,36 +3430,32 @@
                             title: '🥬 Vegetables',
                             products: [
                                 { name: 'Organic Carrots', price: '3.99 PLN', store: 'LIDL', image: '🥕', discount: '15%' },
-                                { name: 'Fresh Spinach', price: '2.49 PLN', store: 'BİM', image: '🥬', discount: '10%' },
-                                { name: 'Roma Tomatoes', price: '4.99 PLN', store: 'Migros', image: '🍅', discount: '20%' },
-                                { name: 'Bell Peppers', price: '5.99 PLN', store: 'LIDL', image: '🫑', discount: '12%' }
+                                { name: 'Fresh Spinach', price: '2.49 PLN', store: 'Biedronka', image: '🥬', discount: '10%' },
+                                { name: 'Roma Tomatoes', price: '4.99 PLN', store: 'Carrefour', image: '🍅', discount: '20%' }
                             ]
                         },
                         'fruits': {
                             title: '🍎 Fruits',
                             products: [
                                 { name: 'Fresh Bananas', price: '2.99 PLN', store: 'LIDL', image: '🍌', discount: '25%' },
-                                { name: 'Red Apples', price: '3.49 PLN', store: 'BİM', image: '🍎', discount: '18%' },
-                                { name: 'Strawberries', price: '7.99 PLN', store: 'Migros', image: '🍓', discount: '30%' },
-                                { name: 'Orange Pack', price: '4.99 PLN', store: 'LIDL', image: '🍊', discount: '15%' },
-                                { name: 'Fresh Grapes', price: '6.49 PLN', store: 'BİM', image: '🍇', discount: '22%' },
-                                { name: 'Pineapple', price: '8.99 PLN', store: 'Migros', image: '🍍', discount: '20%' }
+                                { name: 'Red Apples', price: '3.49 PLN', store: 'Biedronka', image: '🍎', discount: '18%' },
+                                { name: 'Strawberries', price: '7.99 PLN', store: 'Carrefour', image: '🍓', discount: '30%' }
                             ]
                         },
                         'organic': {
                             title: '🌱 Organic Products',
                             products: [
                                 { name: 'Organic Eggs', price: '8.99 PLN', store: 'LIDL', image: '🥚', discount: '10%' },
-                                { name: 'Organic Milk', price: '6.49 PLN', store: 'BİM', image: '🥛', discount: '15%' },
-                                { name: 'Organic Bread', price: '4.99 PLN', store: 'Migros', image: '🍞', discount: '12%' }
+                                { name: 'Organic Milk', price: '6.49 PLN', store: 'Biedronka', image: '🥛', discount: '15%' },
+                                { name: 'Organic Bread', price: '4.99 PLN', store: 'Carrefour', image: '🍞', discount: '12%' }
                             ]
                         },
                         'snacks': {
                             title: '🥜 Nuts & Snacks',
                             products: [
                                 { name: 'Mixed Nuts', price: '12.99 PLN', store: 'LIDL', image: '🥜', discount: '20%' },
-                                { name: 'Potato Chips', price: '3.99 PLN', store: 'BİM', image: '🍟', discount: '25%' },
-                                { name: 'Chocolate Bar', price: '2.99 PLN', store: 'Migros', image: '🍫', discount: '15%' }
+                                { name: 'Potato Chips', price: '3.99 PLN', store: 'Biedronka', image: '🍟', discount: '25%' },
+                                { name: 'Chocolate Bar', price: '2.99 PLN', store: 'Carrefour', image: '🍫', discount: '15%' }
                             ]
                         }
                     }
@@ -3441,39 +3467,28 @@
                         'beer': {
                             title: '🍺 Beer',
                             products: [
-                                { name: 'Efes Pilsen 500ml', price: '8.99 PLN', store: 'LIDL', image: '🍺', discount: '15%' },
-                                { name: 'Tuborg Gold 330ml', price: '6.49 PLN', store: 'BİM', image: '🍺', discount: '20%' },
-                                { name: 'Heineken 500ml', price: '12.99 PLN', store: 'Migros', image: '🍺', discount: '10%' }
+                                { name: 'Lager Beer 6-pack', price: '15.99 PLN', store: 'LIDL', image: '🍺', discount: '10%' },
+                                { name: 'Craft Beer', price: '8.99 PLN', store: 'Biedronka', image: '🍺', discount: '15%' }
                             ]
                         },
                         'wine': {
                             title: '🍷 Wine',
                             products: [
-                                { name: 'Red Wine 750ml', price: '29.99 PLN', store: 'LIDL', image: '🍷', discount: '25%' },
-                                { name: 'White Wine 750ml', price: '24.99 PLN', store: 'Migros', image: '🍷', discount: '20%' },
-                                { name: 'Sparkling Wine', price: '39.99 PLN', store: 'BİM', image: '🥂', discount: '15%' }
+                                { name: 'Red Wine', price: '29.99 PLN', store: 'LIDL', image: '🍷', discount: '20%' },
+                                { name: 'White Wine', price: '24.99 PLN', store: 'Carrefour', image: '🍷', discount: '15%' }
                             ]
                         }
                     }
                 },
                 'beverages': {
                     title: '🥤 Beverages',
-                    icon: 'lucide-cup-soda',
+                    icon: 'lucide-coffee',
                     subcategories: {
                         'soft-drinks': {
                             title: '🥤 Soft Drinks',
                             products: [
-                                { name: 'Coca Cola 2L', price: '4.99 PLN', store: 'LIDL', image: '🥤', discount: '20%' },
-                                { name: 'Pepsi 1.5L', price: '3.49 PLN', store: 'BİM', image: '🥤', discount: '15%' },
-                                { name: 'Sprite 2L', price: '4.49 PLN', store: 'Migros', image: '🥤', discount: '18%' }
-                            ]
-                        },
-                        'juices': {
-                            title: '🧃 Juices',
-                            products: [
-                                { name: 'Orange Juice 1L', price: '5.99 PLN', store: 'LIDL', image: '🧃', discount: '12%' },
-                                { name: 'Apple Juice 1L', price: '4.99 PLN', store: 'BİM', image: '🧃', discount: '25%' },
-                                { name: 'Cranberry Juice', price: '7.99 PLN', store: 'Migros', image: '🧃', discount: '20%' }
+                                { name: 'Cola 2L', price: '5.99 PLN', store: 'LIDL', image: '🥤', discount: '25%' },
+                                { name: 'Orange Juice 1L', price: '4.99 PLN', store: 'Biedronka', image: '🧃', discount: '20%' }
                             ]
                         }
                     }
@@ -3486,16 +3501,14 @@
                             title: '📱 Smartphones',
                             products: [
                                 { name: 'iPhone 15', price: '3999 PLN', store: 'MediaMarkt', image: '📱', discount: '5%' },
-                                { name: 'Samsung Galaxy S24', price: '3499 PLN', store: 'Saturn', image: '📱', discount: '8%' },
-                                { name: 'Google Pixel 8', price: '2999 PLN', store: 'MediaMarkt', image: '📱', discount: '12%' }
+                                { name: 'Samsung Galaxy S24', price: '3499 PLN', store: 'RTV EURO AGD', image: '📱', discount: '8%' }
                             ]
                         },
-                        'laptops': {
+                        'computers': {
                             title: '💻 Computers',
                             products: [
                                 { name: 'MacBook Air M2', price: '4999 PLN', store: 'MediaMarkt', image: '💻', discount: '10%' },
-                                { name: 'Dell XPS 13', price: '3999 PLN', store: 'Saturn', image: '💻', discount: '15%' },
-                                { name: 'HP Pavilion', price: '2499 PLN', store: 'MediaMarkt', image: '💻', discount: '20%' }
+                                { name: 'Dell XPS 13', price: '3999 PLN', store: 'RTV EURO AGD', image: '💻', discount: '15%' }
                             ]
                         }
                     }
@@ -3507,17 +3520,15 @@
                         'bathroom': {
                             title: '🛁 Bathroom Essentials',
                             products: [
-                                { name: 'Shampoo 400ml', price: '12.99 PLN', store: 'LIDL', image: '🧴', discount: '20%' },
-                                { name: 'Toilet Paper 12pk', price: '15.99 PLN', store: 'BİM', image: '🧻', discount: '25%' },
-                                { name: 'Towel Set', price: '29.99 PLN', store: 'Migros', image: '🏠', discount: '15%' }
+                                { name: 'Shampoo 400ml', price: '12.99 PLN', store: 'Rossmann', image: '🧴', discount: '20%' },
+                                { name: 'Toilet Paper 12pk', price: '15.99 PLN', store: 'DM', image: '🧻', discount: '25%' }
                             ]
                         },
                         'kitchen': {
                             title: '🍳 Kitchenware',
                             products: [
-                                { name: 'Non-stick Pan', price: '39.99 PLN', store: 'LIDL', image: '🍳', discount: '30%' },
-                                { name: 'Glass Bowl Set', price: '24.99 PLN', store: 'BİM', image: '🥣', discount: '20%' },
-                                { name: 'Knife Set', price: '49.99 PLN', store: 'Migros', image: '🔪', discount: '25%' }
+                                { name: 'Non-stick Pan', price: '39.99 PLN', store: 'IKEA', image: '🍳', discount: '30%' },
+                                { name: 'Glass Bowl Set', price: '24.99 PLN', store: 'Jysk', image: '🥣', discount: '20%' }
                             ]
                         }
                     }
@@ -3529,17 +3540,8 @@
                         'laundry': {
                             title: '👕 Laundry',
                             products: [
-                                { name: 'Detergent 2L', price: '18.99 PLN', store: 'LIDL', image: '🧴', discount: '25%' },
-                                { name: 'Fabric Softener', price: '12.99 PLN', store: 'BİM', image: '🧴', discount: '20%' },
-                                { name: 'Stain Remover', price: '8.99 PLN', store: 'Migros', image: '🧴', discount: '15%' }
-                            ]
-                        },
-                        'dishwashing': {
-                            title: '🍽️ Dishwashing',
-                            products: [
-                                { name: 'Dish Soap 500ml', price: '6.99 PLN', store: 'LIDL', image: '🧽', discount: '30%' },
-                                { name: 'Dishwasher Tablets', price: '24.99 PLN', store: 'BİM', image: '🧽', discount: '20%' },
-                                { name: 'Sponges Pack', price: '4.99 PLN', store: 'Migros', image: '🧽', discount: '25%' }
+                                { name: 'Washing Powder 5kg', price: '29.99 PLN', store: 'LIDL', image: '🧺', discount: '15%' },
+                                { name: 'Fabric Softener 3L', price: '19.99 PLN', store: 'Biedronka', image: '🧴', discount: '20%' }
                             ]
                         }
                     }
@@ -3551,17 +3553,8 @@
                         'toys': {
                             title: '🧸 Toys',
                             products: [
-                                { name: 'Teddy Bear', price: '29.99 PLN', store: 'LIDL', image: '🧸', discount: '20%' },
-                                { name: 'Building Blocks', price: '19.99 PLN', store: 'BİM', image: '🧱', discount: '25%' },
-                                { name: 'Puzzle 500pc', price: '14.99 PLN', store: 'Migros', image: '🧩', discount: '15%' }
-                            ]
-                        },
-                        'diapers': {
-                            title: '👶 Diapers',
-                            products: [
-                                { name: 'Baby Diapers Size 3', price: '39.99 PLN', store: 'LIDL', image: '👶', discount: '30%' },
-                                { name: 'Wet Wipes 80pk', price: '8.99 PLN', store: 'BİM', image: '🧻', discount: '20%' },
-                                { name: 'Baby Cream', price: '12.99 PLN', store: 'Migros', image: '🧴', discount: '15%' }
+                                { name: 'LEGO Set', price: '99.99 PLN', store: 'Smyk', image: '🧸', discount: '25%' },
+                                { name: 'Plush Toy', price: '29.99 PLN', store: 'Smyk', image: '🧸', discount: '30%' }
                             ]
                         }
                     }
@@ -3573,17 +3566,15 @@
                         'mens': {
                             title: '👔 Men\'s',
                             products: [
-                                { name: 'T-Shirt Pack', price: '24.99 PLN', store: 'LIDL', image: '👕', discount: '25%' },
-                                { name: 'Jeans', price: '49.99 PLN', store: 'BİM', image: '👖', discount: '30%' },
-                                { name: 'Sneakers', price: '79.99 PLN', store: 'Migros', image: '👟', discount: '20%' }
+                                { name: 'T-Shirt Pack', price: '24.99 PLN', store: 'C&A', image: '👕', discount: '25%' },
+                                { name: 'Jeans', price: '49.99 PLN', store: 'Takko Fashion', image: '👖', discount: '30%' }
                             ]
                         },
                         'womens': {
                             title: '👗 Women\'s',
                             products: [
-                                { name: 'Dress', price: '39.99 PLN', store: 'LIDL', image: '👗', discount: '35%' },
-                                { name: 'Blouse', price: '29.99 PLN', store: 'BİM', image: '👚', discount: '25%' },
-                                { name: 'High Heels', price: '89.99 PLN', store: 'Migros', image: '👠', discount: '20%' }
+                                { name: 'Dress', price: '39.99 PLN', store: 'C&A', image: '👗', discount: '35%' },
+                                { name: 'Blouse', price: '29.99 PLN', store: 'Takko Fashion', image: '👚', discount: '25%' }
                             ]
                         }
                     }
@@ -3595,39 +3586,21 @@
                         'skincare': {
                             title: '✨ Skincare',
                             products: [
-                                { name: 'Face Cream 50ml', price: '19.99 PLN', store: 'LIDL', image: '🧴', discount: '25%' },
-                                { name: 'Sunscreen SPF50', price: '14.99 PLN', store: 'BİM', image: '🧴', discount: '20%' },
-                                { name: 'Face Mask Set', price: '12.99 PLN', store: 'Migros', image: '🧴', discount: '30%' }
-                            ]
-                        },
-                        'bath': {
-                            title: '🛁 Bath & Body Care',
-                            products: [
-                                { name: 'Body Wash 400ml', price: '8.99 PLN', store: 'LIDL', image: '🧴', discount: '20%' },
-                                { name: 'Body Lotion', price: '12.99 PLN', store: 'BİM', image: '🧴', discount: '25%' },
-                                { name: 'Bath Bombs Set', price: '16.99 PLN', store: 'Migros', image: '🛁', discount: '15%' }
+                                { name: 'Face Cream 50ml', price: '19.99 PLN', store: 'Rossmann', image: '🧴', discount: '25%' },
+                                { name: 'Sunscreen SPF50', price: '14.99 PLN', store: 'DM', image: '🧴', discount: '20%' }
                             ]
                         }
                     }
                 },
                 'pets': {
-                    title: '🐶 Pets',
+                    title: '🐾 Pets',
                     icon: 'lucide-heart',
                     subcategories: {
                         'dog-food': {
                             title: '🐕 Dog Food',
                             products: [
-                                { name: 'Dry Dog Food 5kg', price: '49.99 PLN', store: 'LIDL', image: '🐕', discount: '20%' },
-                                { name: 'Wet Dog Food 12pk', price: '24.99 PLN', store: 'BİM', image: '🥫', discount: '25%' },
-                                { name: 'Dog Treats', price: '8.99 PLN', store: 'Migros', image: '🦴', discount: '15%' }
-                            ]
-                        },
-                        'cat-food': {
-                            title: '🐱 Cat Food',
-                            products: [
-                                { name: 'Dry Cat Food 3kg', price: '39.99 PLN', store: 'LIDL', image: '🐱', discount: '30%' },
-                                { name: 'Wet Cat Food 12pk', price: '19.99 PLN', store: 'BİM', image: '🥫', discount: '20%' },
-                                { name: 'Cat Litter 10L', price: '14.99 PLN', store: 'Migros', image: '🪣', discount: '25%' }
+                                { name: 'Dry Dog Food 15kg', price: '89.99 PLN', store: 'Kakadu', image: '🐕', discount: '15%' },
+                                { name: 'Wet Dog Food 12x400g', price: '49.99 PLN', store: 'MAXI ZOO', image: '🐕', discount: '20%' }
                             ]
                         }
                     }
@@ -3639,17 +3612,8 @@
                         'tires': {
                             title: '🛞 Tires',
                             products: [
-                                { name: 'Summer Tires 205/55R16', price: '299.99 PLN', store: 'AutoParts', image: '🛞', discount: '15%' },
-                                { name: 'Winter Tires 195/65R15', price: '349.99 PLN', store: 'TireShop', image: '🛞', discount: '20%' },
-                                { name: 'All Season Tires', price: '279.99 PLN', store: 'AutoParts', image: '🛞', discount: '10%' }
-                            ]
-                        },
-                        'accessories': {
-                            title: '🔧 Car Accessories',
-                            products: [
-                                { name: 'Car Phone Holder', price: '19.99 PLN', store: 'LIDL', image: '📱', discount: '25%' },
-                                { name: 'Car Charger', price: '12.99 PLN', store: 'BİM', image: '🔌', discount: '20%' },
-                                { name: 'Air Freshener', price: '4.99 PLN', store: 'Migros', image: '🌸', discount: '30%' }
+                                { name: 'Summer Tires 205/55R16', price: '299.99 PLN', store: 'Castorama', image: '🛞', discount: '15%' },
+                                { name: 'Winter Tires 195/65R15', price: '349.99 PLN', store: 'Leroy Merlin', image: '🛞', discount: '20%' }
                             ]
                         }
                     }
@@ -3658,20 +3622,11 @@
                     title: '🚴 Sports & Outdoors',
                     icon: 'lucide-dumbbell',
                     subcategories: {
-                        'fitness': {
-                            title: '💪 Fitness',
+                        'bikes': {
+                            title: '🚲 Bikes',
                             products: [
-                                { name: 'Yoga Mat', price: '29.99 PLN', store: 'SportShop', image: '🧘', discount: '25%' },
-                                { name: 'Dumbbells 5kg', price: '49.99 PLN', store: 'FitnessStore', image: '🏋️', discount: '20%' },
-                                { name: 'Resistance Bands', price: '19.99 PLN', store: 'SportShop', image: '🏃', discount: '30%' }
-                            ]
-                        },
-                        'outdoor': {
-                            title: '🏕️ Outdoor',
-                            products: [
-                                { name: 'Camping Tent 2p', price: '149.99 PLN', store: 'OutdoorGear', image: '⛺', discount: '15%' },
-                                { name: 'Sleeping Bag', price: '79.99 PLN', store: 'CampingStore', image: '🛌', discount: '20%' },
-                                { name: 'Hiking Backpack', price: '99.99 PLN', store: 'OutdoorGear', image: '🎒', discount: '25%' }
+                                { name: 'Mountain Bike', price: '999.99 PLN', store: 'Decathlon', image: '🚲', discount: '10%' },
+                                { name: 'City Bike', price: '799.99 PLN', store: '4F', image: '🚲', discount: '15%' }
                             ]
                         }
                     }
@@ -3683,17 +3638,8 @@
                         'books': {
                             title: '📚 Books',
                             products: [
-                                { name: 'Best Seller Novel', price: '24.99 PLN', store: 'BookStore', image: '📖', discount: '20%' },
-                                { name: 'Cookbook', price: '19.99 PLN', store: 'LIDL', image: '👨‍🍳', discount: '25%' },
-                                { name: 'Self-Help Book', price: '29.99 PLN', store: 'BookStore', image: '📚', discount: '15%' }
-                            ]
-                        },
-                        'games': {
-                            title: '🎮 Video Games',
-                            products: [
-                                { name: 'PlayStation Game', price: '199.99 PLN', store: 'GameStore', image: '🎮', discount: '30%' },
-                                { name: 'Nintendo Switch Game', price: '149.99 PLN', store: 'GameStore', image: '🎮', discount: '25%' },
-                                { name: 'PC Game', price: '99.99 PLN', store: 'DigitalStore', image: '💻', discount: '40%' }
+                                { name: 'Best Seller Novel', price: '24.99 PLN', store: 'Empik', image: '📖', discount: '20%' },
+                                { name: 'Cookbook', price: '19.99 PLN', store: 'taniaksiazka.pl', image: '👨‍🍳', discount: '25%' }
                             ]
                         }
                     }
@@ -3754,36 +3700,32 @@
                             title: '🥬 Vegetables',
                             products: [
                                 { name: 'Organic Carrots', price: '3.99 PLN', store: 'LIDL', image: '🥕', discount: '15%' },
-                                { name: 'Fresh Spinach', price: '2.49 PLN', store: 'BİM', image: '🥬', discount: '10%' },
-                                { name: 'Roma Tomatoes', price: '4.99 PLN', store: 'Migros', image: '🍅', discount: '20%' },
-                                { name: 'Bell Peppers', price: '5.99 PLN', store: 'LIDL', image: '🫑', discount: '12%' }
+                                { name: 'Fresh Spinach', price: '2.49 PLN', store: 'Biedronka', image: '🥬', discount: '10%' },
+                                { name: 'Roma Tomatoes', price: '4.99 PLN', store: 'Carrefour', image: '🍅', discount: '20%' }
                             ]
                         },
                         'fruits': {
                             title: '🍎 Fruits',
                             products: [
                                 { name: 'Fresh Bananas', price: '2.99 PLN', store: 'LIDL', image: '🍌', discount: '25%' },
-                                { name: 'Red Apples', price: '3.49 PLN', store: 'BİM', image: '🍎', discount: '18%' },
-                                { name: 'Strawberries', price: '7.99 PLN', store: 'Migros', image: '🍓', discount: '30%' },
-                                { name: 'Orange Pack', price: '4.99 PLN', store: 'LIDL', image: '🍊', discount: '15%' },
-                                { name: 'Fresh Grapes', price: '6.49 PLN', store: 'BİM', image: '🍇', discount: '22%' },
-                                { name: 'Pineapple', price: '8.99 PLN', store: 'Migros', image: '🍍', discount: '20%' }
+                                { name: 'Red Apples', price: '3.49 PLN', store: 'Biedronka', image: '🍎', discount: '18%' },
+                                { name: 'Strawberries', price: '7.99 PLN', store: 'Carrefour', image: '🍓', discount: '30%' }
                             ]
                         },
                         'organic': {
                             title: '🌱 Organic Products',
                             products: [
                                 { name: 'Organic Eggs', price: '8.99 PLN', store: 'LIDL', image: '🥚', discount: '10%' },
-                                { name: 'Organic Milk', price: '6.49 PLN', store: 'BİM', image: '🥛', discount: '15%' },
-                                { name: 'Organic Bread', price: '4.99 PLN', store: 'Migros', image: '🍞', discount: '12%' }
+                                { name: 'Organic Milk', price: '6.49 PLN', store: 'Biedronka', image: '🥛', discount: '15%' },
+                                { name: 'Organic Bread', price: '4.99 PLN', store: 'Carrefour', image: '🍞', discount: '12%' }
                             ]
                         },
                         'snacks': {
                             title: '🥜 Nuts & Snacks',
                             products: [
                                 { name: 'Mixed Nuts', price: '12.99 PLN', store: 'LIDL', image: '🥜', discount: '20%' },
-                                { name: 'Potato Chips', price: '3.99 PLN', store: 'BİM', image: '🍟', discount: '25%' },
-                                { name: 'Chocolate Bar', price: '2.99 PLN', store: 'Migros', image: '🍫', discount: '15%' }
+                                { name: 'Potato Chips', price: '3.99 PLN', store: 'Biedronka', image: '🍟', discount: '25%' },
+                                { name: 'Chocolate Bar', price: '2.99 PLN', store: 'Carrefour', image: '🍫', discount: '15%' }
                             ]
                         }
                     }
@@ -3795,39 +3737,28 @@
                         'beer': {
                             title: '🍺 Beer',
                             products: [
-                                { name: 'Efes Pilsen 500ml', price: '8.99 PLN', store: 'LIDL', image: '🍺', discount: '15%' },
-                                { name: 'Tuborg Gold 330ml', price: '6.49 PLN', store: 'BİM', image: '🍺', discount: '20%' },
-                                { name: 'Heineken 500ml', price: '12.99 PLN', store: 'Migros', image: '🍺', discount: '10%' }
+                                { name: 'Lager Beer 6-pack', price: '15.99 PLN', store: 'LIDL', image: '🍺', discount: '10%' },
+                                { name: 'Craft Beer', price: '8.99 PLN', store: 'Biedronka', image: '🍺', discount: '15%' }
                             ]
                         },
                         'wine': {
                             title: '🍷 Wine',
                             products: [
-                                { name: 'Red Wine 750ml', price: '29.99 PLN', store: 'LIDL', image: '🍷', discount: '25%' },
-                                { name: 'White Wine 750ml', price: '24.99 PLN', store: 'Migros', image: '🍷', discount: '20%' },
-                                { name: 'Sparkling Wine', price: '39.99 PLN', store: 'BİM', image: '🥂', discount: '15%' }
+                                { name: 'Red Wine', price: '29.99 PLN', store: 'LIDL', image: '🍷', discount: '20%' },
+                                { name: 'White Wine', price: '24.99 PLN', store: 'Carrefour', image: '🍷', discount: '15%' }
                             ]
                         }
                     }
                 },
                 'beverages': {
                     title: '🥤 Beverages',
-                    icon: 'lucide-cup-soda',
+                    icon: 'lucide-coffee',
                     subcategories: {
                         'soft-drinks': {
                             title: '🥤 Soft Drinks',
                             products: [
-                                { name: 'Coca Cola 2L', price: '4.99 PLN', store: 'LIDL', image: '🥤', discount: '20%' },
-                                { name: 'Pepsi 1.5L', price: '3.49 PLN', store: 'BİM', image: '🥤', discount: '15%' },
-                                { name: 'Sprite 2L', price: '4.49 PLN', store: 'Migros', image: '🥤', discount: '18%' }
-                            ]
-                        },
-                        'juices': {
-                            title: '🧃 Juices',
-                            products: [
-                                { name: 'Orange Juice 1L', price: '5.99 PLN', store: 'LIDL', image: '🧃', discount: '12%' },
-                                { name: 'Apple Juice 1L', price: '4.99 PLN', store: 'BİM', image: '🧃', discount: '25%' },
-                                { name: 'Cranberry Juice', price: '7.99 PLN', store: 'Migros', image: '🧃', discount: '20%' }
+                                { name: 'Cola 2L', price: '5.99 PLN', store: 'LIDL', image: '🥤', discount: '25%' },
+                                { name: 'Orange Juice 1L', price: '4.99 PLN', store: 'Biedronka', image: '🧃', discount: '20%' }
                             ]
                         }
                     }
@@ -3840,16 +3771,14 @@
                             title: '📱 Smartphones',
                             products: [
                                 { name: 'iPhone 15', price: '3999 PLN', store: 'MediaMarkt', image: '📱', discount: '5%' },
-                                { name: 'Samsung Galaxy S24', price: '3499 PLN', store: 'Saturn', image: '📱', discount: '8%' },
-                                { name: 'Google Pixel 8', price: '2999 PLN', store: 'MediaMarkt', image: '📱', discount: '12%' }
+                                { name: 'Samsung Galaxy S24', price: '3499 PLN', store: 'RTV EURO AGD', image: '📱', discount: '8%' }
                             ]
                         },
-                        'laptops': {
+                        'computers': {
                             title: '💻 Computers',
                             products: [
                                 { name: 'MacBook Air M2', price: '4999 PLN', store: 'MediaMarkt', image: '💻', discount: '10%' },
-                                { name: 'Dell XPS 13', price: '3999 PLN', store: 'Saturn', image: '💻', discount: '15%' },
-                                { name: 'HP Pavilion', price: '2499 PLN', store: 'MediaMarkt', image: '💻', discount: '20%' }
+                                { name: 'Dell XPS 13', price: '3999 PLN', store: 'RTV EURO AGD', image: '💻', discount: '15%' }
                             ]
                         }
                     }
@@ -3861,17 +3790,15 @@
                         'bathroom': {
                             title: '🛁 Bathroom Essentials',
                             products: [
-                                { name: 'Shampoo 400ml', price: '12.99 PLN', store: 'LIDL', image: '🧴', discount: '20%' },
-                                { name: 'Toilet Paper 12pk', price: '15.99 PLN', store: 'BİM', image: '🧻', discount: '25%' },
-                                { name: 'Towel Set', price: '29.99 PLN', store: 'Migros', image: '🏠', discount: '15%' }
+                                { name: 'Shampoo 400ml', price: '12.99 PLN', store: 'Rossmann', image: '🧴', discount: '20%' },
+                                { name: 'Toilet Paper 12pk', price: '15.99 PLN', store: 'DM', image: '🧻', discount: '25%' }
                             ]
                         },
                         'kitchen': {
                             title: '🍳 Kitchenware',
                             products: [
-                                { name: 'Non-stick Pan', price: '39.99 PLN', store: 'LIDL', image: '🍳', discount: '30%' },
-                                { name: 'Glass Bowl Set', price: '24.99 PLN', store: 'BİM', image: '🥣', discount: '20%' },
-                                { name: 'Knife Set', price: '49.99 PLN', store: 'Migros', image: '🔪', discount: '25%' }
+                                { name: 'Non-stick Pan', price: '39.99 PLN', store: 'IKEA', image: '🍳', discount: '30%' },
+                                { name: 'Glass Bowl Set', price: '24.99 PLN', store: 'Jysk', image: '🥣', discount: '20%' }
                             ]
                         }
                     }
@@ -3883,17 +3810,8 @@
                         'laundry': {
                             title: '👕 Laundry',
                             products: [
-                                { name: 'Detergent 2L', price: '18.99 PLN', store: 'LIDL', image: '🧴', discount: '25%' },
-                                { name: 'Fabric Softener', price: '12.99 PLN', store: 'BİM', image: '🧴', discount: '20%' },
-                                { name: 'Stain Remover', price: '8.99 PLN', store: 'Migros', image: '🧴', discount: '15%' }
-                            ]
-                        },
-                        'dishwashing': {
-                            title: '🍽️ Dishwashing',
-                            products: [
-                                { name: 'Dish Soap 500ml', price: '6.99 PLN', store: 'LIDL', image: '🧽', discount: '30%' },
-                                { name: 'Dishwasher Tablets', price: '24.99 PLN', store: 'BİM', image: '🧽', discount: '20%' },
-                                { name: 'Sponges Pack', price: '4.99 PLN', store: 'Migros', image: '🧽', discount: '25%' }
+                                { name: 'Washing Powder 5kg', price: '29.99 PLN', store: 'LIDL', image: '🧺', discount: '15%' },
+                                { name: 'Fabric Softener 3L', price: '19.99 PLN', store: 'Biedronka', image: '🧴', discount: '20%' }
                             ]
                         }
                     }
@@ -3905,17 +3823,8 @@
                         'toys': {
                             title: '🧸 Toys',
                             products: [
-                                { name: 'Teddy Bear', price: '29.99 PLN', store: 'LIDL', image: '🧸', discount: '20%' },
-                                { name: 'Building Blocks', price: '19.99 PLN', store: 'BİM', image: '🧱', discount: '25%' },
-                                { name: 'Puzzle 500pc', price: '14.99 PLN', store: 'Migros', image: '🧩', discount: '15%' }
-                            ]
-                        },
-                        'diapers': {
-                            title: '👶 Diapers',
-                            products: [
-                                { name: 'Baby Diapers Size 3', price: '39.99 PLN', store: 'LIDL', image: '👶', discount: '30%' },
-                                { name: 'Wet Wipes 80pk', price: '8.99 PLN', store: 'BİM', image: '🧻', discount: '20%' },
-                                { name: 'Baby Cream', price: '12.99 PLN', store: 'Migros', image: '🧴', discount: '15%' }
+                                { name: 'LEGO Set', price: '99.99 PLN', store: 'Smyk', image: '🧸', discount: '25%' },
+                                { name: 'Plush Toy', price: '29.99 PLN', store: 'Smyk', image: '🧸', discount: '30%' }
                             ]
                         }
                     }
@@ -3927,17 +3836,15 @@
                         'mens': {
                             title: '👔 Men\'s',
                             products: [
-                                { name: 'T-Shirt Pack', price: '24.99 PLN', store: 'LIDL', image: '👕', discount: '25%' },
-                                { name: 'Jeans', price: '49.99 PLN', store: 'BİM', image: '👖', discount: '30%' },
-                                { name: 'Sneakers', price: '79.99 PLN', store: 'Migros', image: '👟', discount: '20%' }
+                                { name: 'T-Shirt Pack', price: '24.99 PLN', store: 'C&A', image: '👕', discount: '25%' },
+                                { name: 'Jeans', price: '49.99 PLN', store: 'Takko Fashion', image: '👖', discount: '30%' }
                             ]
                         },
                         'womens': {
                             title: '👗 Women\'s',
                             products: [
-                                { name: 'Dress', price: '39.99 PLN', store: 'LIDL', image: '👗', discount: '35%' },
-                                { name: 'Blouse', price: '29.99 PLN', store: 'BİM', image: '👚', discount: '25%' },
-                                { name: 'High Heels', price: '89.99 PLN', store: 'Migros', image: '👠', discount: '20%' }
+                                { name: 'Dress', price: '39.99 PLN', store: 'C&A', image: '👗', discount: '35%' },
+                                { name: 'Blouse', price: '29.99 PLN', store: 'Takko Fashion', image: '👚', discount: '25%' }
                             ]
                         }
                     }
